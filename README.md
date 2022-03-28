@@ -11,12 +11,23 @@ npm install react-native-mentionable-textinput
 ## Usage
 
 ```js
-import { multiply } from "react-native-mentionable-textinput";
+import { TextInputMention } from "react-native-mentionable-textinput";
 
 // ...
 
-const result = await multiply(3, 7);
-```
+<TextInputMention
+  mentionsTypes={[
+    {
+      type: 'channels',
+      mentionChar: '/',
+    },
+    {
+      type: 'tags',
+      mentionChar: '#',
+    }
+  ]}
+  // TODO - WIP
+/>```
 
 ## Contributing
 
