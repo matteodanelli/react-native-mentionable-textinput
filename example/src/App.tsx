@@ -1,31 +1,96 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { Alert, Pressable, ScrollView } from 'react-native';
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native';
+import faker from './faker';
+import { TextInputMention } from 'react-native-mentionable-textinput';
+import { MentionListItem } from './Mention/types';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-mentionable-textinput';
+const users = [...new Array(30)].map((_, index) => ({
+  id: `${index}`,
+  label: index === 0 ? 'test@gmail.com' : faker(),
+  type: 'users',
+  mentionChar: '@',
+}));
 
-export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+const assets = [...new Array(30)].map((_, index) => ({
+  id: `${index}`,
+  label: faker(),
+  type: 'assets',
+  mentionChar: '#',
+}));
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+const channels = [...new Array(30)].map((_, index) => ({
+  id: `${index}`,
+  label: faker(),
+  type: 'channels',
+  mentionChar: '/',
+}));
+
+const App = () => {
+  const [userFound, selectUsers] = useState<Array<MentionListItem>>([]);
+
+  const [initialMentioned] = useState([]);
 
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#eee' }}>
+      <ScrollView>
+        <Pressable>
+          <Text>First</Text>
+          {[...new Array(50)].map(() => (
+            <Text>test</Text>
+          ))}
+          <Text>End</Text>
+        </Pressable>
+      </ScrollView>
+      <TextInputMention
+        mentionsTypes={[
+          {
+            type: 'users',
+            mentionChar: '@',
+          },
+          {
+            type: 'channels',
+            mentionChar: '/',
+          },
+          {
+            type: 'assets',
+            mentionChar: '#',
+          },
+        ]}
+        initialMentioned={initialMentioned}
+        initialText={''}
+        refreshData={(mentionsType, searchText) => {
+          console.log('mentionsType', mentionsType);
+          if (mentionsType === 'users') {
+            selectUsers(
+              users.filter((user) =>
+                user.label.toLowerCase().includes(searchText.toLowerCase())
+              )
+            );
+          } else if (mentionsType === 'assets') {
+            selectUsers(
+              assets.filter((asset) =>
+                asset.label.toLowerCase().includes(searchText.toLowerCase())
+              )
+            );
+          } else if (mentionsType === 'channels') {
+            selectUsers(
+              channels.filter((channel) =>
+                channel.label.toLowerCase().includes(searchText.toLowerCase())
+              )
+            );
+          }
+        }}
+        onSend={() => {
+          Alert.alert('send');
+        }}
+        isMultilineEnabled
+        mentionItems={userFound}
+        isMentionsEnabled
+      />
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
+export default App;
