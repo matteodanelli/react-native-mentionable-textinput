@@ -3,8 +3,8 @@ import { Alert, Pressable, ScrollView } from 'react-native';
 import { Text } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import faker from './faker';
-import { TextInputMention } from 'react-native-mentionable-textinput';
-import { MentionListItem } from './Mention/types';
+import { TextInputMention } from '../../src/index';
+import { MentionListItem } from '../../src/types';
 
 const users = [...new Array(30)].map((_, index) => ({
   id: `${index}`,
