@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Pressable, ScrollView } from 'react-native';
-import { Text } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { Alert, Pressable, ScrollView, SafeAreaView, Text } from 'react-native';
 import faker from './faker';
 import { TextInputMention } from '../../src/index';
 // import { MentionListItem } from '../../src/types';

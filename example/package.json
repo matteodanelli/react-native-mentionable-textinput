@@ -11,6 +11,7 @@
   "dependencies": {
     "react": "17.0.2",
     "react-native": "0.67.4",
+    "react-native-device-info": "^8.5.1",
     "react-native-mentionable-textinput": "file:../"
   },
   "devDependencies": {
