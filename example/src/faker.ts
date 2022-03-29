@@ -2853,8 +2853,8 @@ const names2 = [
   'Lieuwe',
 ];
 
-const capFirst = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+const capFirst = (text: string) => {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
 };
 
 const getRandomInt = (min: number, max: number) => {

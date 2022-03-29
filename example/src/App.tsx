@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import faker from './faker';
 import { TextInputMention } from '../../src/index';
-import { MentionListItem } from '../../src/types';
+// import { MentionListItem } from '../../src/types';
 
 const users = [...new Array(30)].map((_, index) => ({
   id: `${index}`,
@@ -28,12 +28,12 @@ const channels = [...new Array(30)].map((_, index) => ({
 }));
 
 const App = () => {
-  const [userFound, selectUsers] = useState<Array<MentionListItem>>([]);
+  const [userFound, selectUsers] = useState<Array<any>>([]);
 
   const [initialMentioned] = useState([]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#eee' }}>
+    <SafeAreaView>
       <ScrollView>
         <Pressable>
           <Text>First</Text>
