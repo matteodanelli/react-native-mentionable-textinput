@@ -1,3 +1,3 @@
 import TextInputMention from './TextInputMention';
-
-export { TextInputMention };
+import { MentionListItem } from './types';
+export { MentionListItem, TextInputMention };

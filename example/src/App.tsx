@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, ScrollView, SafeAreaView, Text } from 'react-native';
 import faker from './faker';
-import { TextInputMention } from '../../src/index';
-// import { MentionListItem } from '../../src/types';
+import { type MentionListItem, TextInputMention } from '../../src/index';
 
 const users = [...new Array(30)].map((_, index) => ({
   id: `${index}`,
@@ -26,7 +25,7 @@ const channels = [...new Array(30)].map((_, index) => ({
 }));
 
 const App = () => {
-  const [userFound, selectUsers] = useState<Array<any>>([]);
+  const [userFound, selectUsers] = useState<Array<MentionListItem>>([]);
 
   const [initialMentioned] = useState([]);
 
