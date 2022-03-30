@@ -1,27 +1,13 @@
 import React, { useState } from 'react';
-import { Alert, Pressable, ScrollView, SafeAreaView, Text } from 'react-native';
+import { Alert, ScrollView, SafeAreaView, Text } from 'react-native';
 import faker from './faker';
 import { type MentionListItem, TextInputMention } from '../../src/index';
 
-const users = [...new Array(30)].map((_, index) => ({
+const users = [...new Array(2500)].map((_, index) => ({
   id: `${index}`,
-  label: index === 0 ? 'test@gmail.com' : faker(),
+  label: faker(),
   type: 'users',
   mentionChar: '@',
-}));
-
-const assets = [...new Array(30)].map((_, index) => ({
-  id: `${index}`,
-  label: faker(),
-  type: 'assets',
-  mentionChar: '#',
-}));
-
-const channels = [...new Array(30)].map((_, index) => ({
-  id: `${index}`,
-  label: faker(),
-  type: 'channels',
-  mentionChar: '/',
 }));
 
 const App = () => {
@@ -29,16 +15,30 @@ const App = () => {
 
   const [initialMentioned] = useState([]);
 
+  const refreshData = (mentionsType: string, searchText: string) => {
+    if (mentionsType === 'users') {
+      selectUsers(
+        users.filter((user) =>
+          user.label.toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    }
+  };
+
+  const onSubmit = () => {
+    Alert.alert('Message sent!');
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView>
-        <Pressable>
-          <Text>First</Text>
-          {[...new Array(5)].map(() => (
-            <Text>test</Text>
-          ))}
-          <Text>End</Text>
-        </Pressable>
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Text>Tag something typing @ in the textinput</Text>
       </ScrollView>
       <TextInputMention
         mentionsTypes={[
@@ -46,42 +46,11 @@ const App = () => {
             type: 'users',
             mentionChar: '@',
           },
-          {
-            type: 'channels',
-            mentionChar: '/',
-          },
-          {
-            type: 'assets',
-            mentionChar: '#',
-          },
         ]}
         initialMentioned={initialMentioned}
         initialText={''}
-        refreshData={(mentionsType, searchText) => {
-          console.log('mentionsType', mentionsType);
-          if (mentionsType === 'users') {
-            selectUsers(
-              users.filter((user) =>
-                user.label.toLowerCase().includes(searchText.toLowerCase())
-              )
-            );
-          } else if (mentionsType === 'assets') {
-            selectUsers(
-              assets.filter((asset) =>
-                asset.label.toLowerCase().includes(searchText.toLowerCase())
-              )
-            );
-          } else if (mentionsType === 'channels') {
-            selectUsers(
-              channels.filter((channel) =>
-                channel.label.toLowerCase().includes(searchText.toLowerCase())
-              )
-            );
-          }
-        }}
-        onSend={() => {
-          Alert.alert('send');
-        }}
+        refreshData={refreshData}
+        onSend={onSubmit}
         isMultilineEnabled
         mentionItems={userFound}
         isMentionsEnabled
