@@ -4,7 +4,6 @@ import {
   TextInput,
   View,
   Pressable,
-  Image,
 } from 'react-native';
 import useMention from './hooks/useMention';
 import { Props, TextInputMentionRef } from './types';
@@ -12,10 +11,6 @@ import styles from './style';
 import useXiaomiWorkaraound from './hooks/useXiaomiWorkaround';
 import React, { forwardRef, useImperativeHandle, useMemo } from 'react';
 import MentionView from './MentionView';
-import cancel from './resources/cancel';
-import email from './resources/email';
-import send from './resources/send';
-import send_disabled from './resources/send_disabled';
 
 const TextInputMention = forwardRef<TextInputMentionRef, Props>(
   (props: Props, ref) => {
@@ -28,28 +23,26 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       showMentionItems,
       children,
       showMentionTypes,
-      isMentionsEnabled,
+      isMentionsDisabled,
       onSendCallback,
-      onPressMentionIcon,
       addMention,
-      mentionItems,
+      mentionableItems,
       onPressMentionType,
       closeMention,
       mentionItemsVisible,
       chosenMentionType,
-      iconSendForTextInput,
-      iconSendDisabledForTextInput,
-      iconMentionForTextInput,
-      iconCloseMentionForTextInput,
+      submitIcon,
+      mentionIcon,
+      closeIcon,
+      onPressMentionIcon,
       mentionsTypes,
       sendDisabled,
       keyboardAvoidingViewProps,
       maxHeightMentionWindow,
       setInputTextRefCallback,
-      isMultilineEnabled,
       textInputProps,
-      mentionWindowStyle,
-      containerTextInputStyle,
+      mentionContainerStyle,
+      textInputContainerStyle,
       renderMentionType,
       separatorColor,
     } = useMention(props);
@@ -68,60 +61,31 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
     const { hackCaretHidden, onFocus } = useXiaomiWorkaraound();
 
     const renderMentionIcon = useMemo(() => {
-      if (isMentionsEnabled) {
+      if (!isMentionsDisabled) {
         if (showMentionItems || showMentionTypes) {
           return (
-            <Pressable onPress={onPressMentionIcon}>
-              {iconCloseMentionForTextInput ? (
-                iconCloseMentionForTextInput
-              ) : (
-                <Image style={styles.keyboardIcon} source={{ uri: cancel }} />
-              )}
-            </Pressable>
+            <Pressable onPress={onPressMentionIcon}>{closeIcon}</Pressable>
           );
         } else {
           return (
-            <Pressable onPress={onPressMentionIcon}>
-              {iconMentionForTextInput ? (
-                iconMentionForTextInput
-              ) : (
-                <Image style={styles.keyboardIcon} source={{ uri: email }} />
-              )}
-            </Pressable>
+            <Pressable onPress={onPressMentionIcon}>{mentionIcon}</Pressable>
           );
         }
       } else {
         return <View />;
       }
     }, [
-      isMentionsEnabled,
+      closeIcon,
+      isMentionsDisabled,
+      mentionIcon,
+      onPressMentionIcon,
       showMentionItems,
       showMentionTypes,
-      onPressMentionIcon,
-      iconCloseMentionForTextInput,
-      iconMentionForTextInput,
     ]);
 
     const renderSendIcon = useMemo(() => {
-      if (sendDisabled) {
-        if (iconSendDisabledForTextInput) {
-          return iconSendDisabledForTextInput;
-        } else {
-          return (
-            <Image
-              style={styles.keyboardIcon}
-              source={{ uri: send_disabled }}
-            />
-          );
-        }
-      } else {
-        if (iconSendForTextInput) {
-          return iconSendForTextInput;
-        } else {
-          return <Image style={styles.keyboardIcon} source={{ uri: send }} />;
-        }
-      }
-    }, [iconSendDisabledForTextInput, iconSendForTextInput, sendDisabled]);
+      return submitIcon;
+    }, [submitIcon]);
 
     return (
       <KeyboardAvoidingView
@@ -129,18 +93,18 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
         {...keyboardAvoidingViewProps}
       >
         <View>
-          {isMentionsEnabled ? (
+          {!isMentionsDisabled ? (
             <MentionView
               showMentionItems={showMentionItems}
               showMentionTypes={showMentionTypes}
               addMention={addMention}
-              mentionItems={mentionItems}
+              mentionableItems={mentionableItems}
               onPressMentionType={onPressMentionType}
               onClose={closeMention}
               chosenMentionType={chosenMentionType}
               mentionsTypes={mentionsTypes}
               maxHeightMentionWindow={maxHeightMentionWindow}
-              mentionWindowStyle={mentionWindowStyle}
+              mentionContainerStyle={mentionContainerStyle}
               renderMentionType={renderMentionType}
               separatorColor={separatorColor}
             />
@@ -151,16 +115,10 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
           <View
             style={[styles.separator, { backgroundColor: separatorColor }]}
           />
-          <View style={[styles.textInputContainer, containerTextInputStyle]}>
+          <View style={[styles.textInputContainer, textInputContainerStyle]}>
             <TextInput
-              style={[
-                isMultilineEnabled
-                  ? styles.textInputMultiline
-                  : styles.textInput,
-                Platform.OS === 'ios' ? styles.footerPaddingIos : {},
-              ]}
+              style={{ flex: 1 }}
               ref={setInputTextRefCallback}
-              multiline={true}
               onChangeText={onChangeText}
               enablesReturnKeyAutomatically
               placeholder={placeholder}

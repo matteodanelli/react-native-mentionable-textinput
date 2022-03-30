@@ -5,24 +5,6 @@ const maxHeightInputText = 150;
 const minHeightInputTextContainer = 25;
 
 export default StyleSheet.create({
-  textInputMultiline: {
-    flex: 1,
-    maxHeight: maxHeightInputText,
-    backgroundColor: '#fff',
-    textAlignVertical: 'center',
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-
-  textInput: {
-    flex: 1,
-    maxHeight: minHeightInputTextContainer,
-    backgroundColor: '#fff',
-    textAlignVertical: 'center',
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-
   textInInputText: {
     color: '#000',
     fontWeight: '500',
@@ -37,12 +19,6 @@ export default StyleSheet.create({
     fontSize: 15,
     paddingTop: 0,
     paddingBottom: 0,
-  },
-
-  textArea: {
-    flex: 1,
-    marginHorizontal: 16,
-    textAlignVertical: 'top',
   },
 
   separator: {
@@ -67,38 +43,8 @@ export default StyleSheet.create({
     height: '100%',
   },
 
-  textAreaContainer: {
-    flex: 1,
-  },
-
   footerPaddingIos: {
     paddingTop: 0,
-  },
-
-  emptySlate: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    padding: 16,
-  },
-
-  keyboardIcon: {
-    width: iconHeight,
-    height: iconHeight,
-    marginLeft: 10,
-    resizeMode: 'contain',
-  },
-
-  closeIcon: {
-    width: 40,
-    height: 40,
   },
 
   mentionTypeListItemText: {

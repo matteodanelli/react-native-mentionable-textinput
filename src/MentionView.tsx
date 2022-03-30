@@ -18,27 +18,27 @@ type Props = {
   onClose: () => void;
   addMention: (mention: MentionListItem) => void;
   onPressMentionType: (mentionType: string) => void;
-  mentionItems?: Array<MentionListItem>;
+  mentionableItems?: Array<MentionListItem>;
   showHeader?: boolean;
   chosenMentionType?: string;
   renderMentionType?: (mentionType: string) => JSX.Element;
   renderMentionItem?: (mention: MentionListItem) => JSX.Element;
-  maxHeightMentionWindow?: number;
-  mentionWindowStyle?: StyleProp<ViewStyle>;
+  maxHeightMentionWindow: number;
+  mentionContainerStyle?: StyleProp<ViewStyle>;
 };
 
 const MentionView = (props: Props) => {
   const {
     showMentionTypes,
     showMentionItems,
-    mentionItems,
+    mentionableItems,
     addMention,
     onPressMentionType,
     mentionsTypes,
     renderMentionType,
     renderMentionItem,
-    mentionWindowStyle,
-    maxHeightMentionWindow = 200,
+    mentionContainerStyle,
+    maxHeightMentionWindow,
     separatorColor,
   } = props;
 
@@ -68,7 +68,7 @@ const MentionView = (props: Props) => {
 
   const renderMentionTypes = useMemo(
     () => (
-      <View style={mentionWindowStyle}>
+      <View style={mentionContainerStyle}>
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />
         {mentionsTypes.map((mentionType) => {
           return (
@@ -90,7 +90,7 @@ const MentionView = (props: Props) => {
       </View>
     ),
     [
-      mentionWindowStyle,
+      mentionContainerStyle,
       mentionsTypes,
       onPressMentionType,
       renderMentionType,
@@ -100,7 +100,11 @@ const MentionView = (props: Props) => {
 
   if (showMentionTypes) {
     return renderMentionTypes;
-  } else if (showMentionItems && mentionItems && mentionItems.length > 0) {
+  } else if (
+    showMentionItems &&
+    mentionableItems &&
+    mentionableItems.length > 0
+  ) {
     return (
       <View
         style={{
@@ -113,7 +117,7 @@ const MentionView = (props: Props) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           horizontal={false}
-          data={mentionItems}
+          data={mentionableItems}
           keyExtractor={getMentionKey}
           keyboardDismissMode="none"
           keyboardShouldPersistTaps="always"

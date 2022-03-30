@@ -14,30 +14,28 @@ const useMention = (props: Props) => {
   const {
     initialText,
     initialMentioned,
-    refreshData,
+    searchMentionableItems,
     placeholder,
     onEndTyping,
     children,
-    isMentionsEnabled,
+    isMentionsDisabled,
     onSend,
-    mentionItems,
+    mentionableItems,
     onChangeText: onChangeTextCallback,
     onMentionClose,
-    isSendButtonEnabled,
     mentionStyle,
     textStyle,
     mentionsTypes = [],
-    iconSendForTextInput,
-    iconSendDisabledForTextInput,
-    iconMentionForTextInput,
-    iconCloseMentionForTextInput,
+    isSubmitDisabled,
+    submitIcon,
+    mentionIcon,
+    closeIcon,
     keyboardAvoidingViewProps,
     maxHeightMentionWindow,
     setInputRef,
-    isMultilineEnabled,
     textInputProps,
-    mentionWindowStyle,
-    containerTextInputStyle,
+    mentionContainerStyle,
+    textInputContainerStyle,
     renderMentionType,
     separatorColor = 'grey',
   } = props;
@@ -182,10 +180,10 @@ const useMention = (props: Props) => {
         onChangeTextCallback?.(newText, newMentioned);
       }
 
-      refreshData?.(mentionType, '');
+      searchMentionableItems?.(mentionType, '');
     },
     [
-      refreshData,
+      searchMentionableItems,
       cursorPosition.start,
       cursorPosition.end,
       getObjectMentionFromType,
@@ -197,7 +195,7 @@ const useMention = (props: Props) => {
 
   const onChangeText = useCallback(
     (changedText: string) => {
-      if (isMentionsEnabled) {
+      if (!isMentionsDisabled) {
         const localCursorPosition = getCursorPointer(inputText, changedText);
 
         if (
@@ -217,7 +215,7 @@ const useMention = (props: Props) => {
             localCursorPosition.end
           );
 
-          refreshData?.(chosenMentionType, textToSearch);
+          searchMentionableItems?.(chosenMentionType, textToSearch);
         }
 
         const penultimateChar = changedText.charAt(
@@ -262,12 +260,12 @@ const useMention = (props: Props) => {
     [
       chosenMentionType,
       inputText,
-      isMentionsEnabled,
+      isMentionsDisabled,
       mentioned,
       onChangeTextCallback,
       closeMention,
       onPressMentionType,
-      refreshData,
+      searchMentionableItems,
       searchMentionPosition,
       getObjectMentionFromChar,
     ]
@@ -275,7 +273,7 @@ const useMention = (props: Props) => {
 
   const onSelectionChange = useCallback(
     (event: { nativeEvent: { selection: CursorPosition } }) => {
-      if (isMentionsEnabled) {
+      if (!isMentionsDisabled) {
         // Save the current position of the cursor
         const { selection } = event.nativeEvent;
         setCursorPosition(selection);
@@ -293,7 +291,7 @@ const useMention = (props: Props) => {
         }
       }
     },
-    [inputText.length, isMentionsEnabled, closeMention, searchMentionPosition]
+    [inputText.length, isMentionsDisabled, closeMention, searchMentionPosition]
   );
 
   const addMention = useCallback(
@@ -366,28 +364,25 @@ const useMention = (props: Props) => {
     showMentionItems,
     showMentionTypes,
     children,
-    isMentionsEnabled,
+    isMentionsDisabled,
     onSendCallback,
     onPressMentionIcon,
-    mentionItems,
+    mentionableItems,
     onPressMentionType,
-    isSendButtonEnabled,
     closeMention,
     mentionItemsVisible,
     isTextUpdated,
-    iconSendForTextInput,
-    iconSendDisabledForTextInput,
-    iconMentionForTextInput,
-    iconCloseMentionForTextInput,
+    submitIcon,
+    mentionIcon,
+    closeIcon,
     mentionsTypes,
     keyboardAvoidingViewProps,
     maxHeightMentionWindow,
-    sendDisabled: !isTextUpdated && !isSendButtonEnabled,
+    sendDisabled: !isTextUpdated || isSubmitDisabled,
     setInputTextRefCallback,
-    isMultilineEnabled,
     textInputProps,
-    mentionWindowStyle,
-    containerTextInputStyle,
+    mentionContainerStyle,
+    textInputContainerStyle,
     renderMentionType,
     separatorColor,
   };
