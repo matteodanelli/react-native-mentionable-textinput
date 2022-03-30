@@ -30,7 +30,7 @@ const App = () => {
   const [initialMentioned] = useState([]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <Pressable>
           <Text>First</Text>
