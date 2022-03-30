@@ -1,6 +1,13 @@
 import { MentionListItem, MentionItemType } from './types';
 import React, { Fragment, useCallback, useMemo } from 'react';
-import { FlatList, View, Text, Pressable } from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  Pressable,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import styles from './style';
 
 type Props = {
@@ -13,10 +20,10 @@ type Props = {
   showHeader?: boolean;
   onClose: () => void;
   chosenMentionType?: string;
-  renderMentionType?: (mentionType: string) => typeof View;
-  renderMentionItem?: (mention: MentionListItem) => typeof View;
+  renderMentionType?: (mentionType: string) => JSX.Element;
+  renderMentionItem?: (mention: MentionListItem) => JSX.Element;
   maxHeightMentionWindow?: number;
-  mentionWindowStyle?: any;
+  mentionWindowStyle?: StyleProp<ViewStyle>;
 };
 
 const MentionView = (props: Props) => {

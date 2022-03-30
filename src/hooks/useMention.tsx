@@ -10,13 +10,6 @@ import { Props } from '../types';
 import { Text, TextInput } from 'react-native';
 import styles from '../style';
 
-const renderMention = (text: string) => {
-  return <Text style={styles.mentionInInputText}>{text}</Text>;
-};
-const renderText = (text: string) => {
-  return <Text style={styles.textInInputText}>{text}</Text>;
-};
-
 const useMention = (props: Props) => {
   const {
     initialText,
@@ -31,8 +24,8 @@ const useMention = (props: Props) => {
     onChangeText: onChangeTextCallback,
     onMentionClose,
     isSendButtonEnabled,
-    renderMentionForTextInput,
-    renderTextForTextInput,
+    mentionStyle,
+    textStyle,
     mentionsTypes = [],
     iconSendForTextInput,
     iconSendDisabledForTextInput,
@@ -47,6 +40,27 @@ const useMention = (props: Props) => {
     containerTextInputStyle,
     renderMentionType,
   } = props;
+
+  const renderMention = useCallback(
+    (text: string) => {
+      return (
+        <Text style={mentionStyle ? mentionStyle : styles.mentionInInputText}>
+          {text}
+        </Text>
+      );
+    },
+    [mentionStyle]
+  );
+  const renderText = useCallback(
+    (text: string) => {
+      return (
+        <Text style={textStyle ? textStyle : styles.textInInputText}>
+          {text}
+        </Text>
+      );
+    },
+    [textStyle]
+  );
 
   const setInputTextRefCallback = useCallback(
     (ref: TextInput) => {
@@ -87,6 +101,11 @@ const useMention = (props: Props) => {
     }
   }, [chosenMentionType, onMentionClose]);
 
+  const getObjectMention = useCallback(
+    (type: string) => mentionsTypes.find((mT) => mT.type === type),
+    [mentionsTypes]
+  );
+
   const formattedText = useMemo(() => {
     const textSplitted = [];
 
@@ -98,16 +117,8 @@ const useMention = (props: Props) => {
           cursor,
           mention.position
         );
-        textSplitted.push(
-          renderTextForTextInput
-            ? renderTextForTextInput(mention.label)
-            : renderText(beforeCurrentMention)
-        );
-        textSplitted.push(
-          renderMentionForTextInput
-            ? renderMentionForTextInput(mention.label)
-            : renderMention(mention.label)
-        );
+        textSplitted.push(renderText(beforeCurrentMention));
+        textSplitted.push(renderMention(mention.label));
         cursor = mention.position + mention.label.length;
       });
       // Concat the end of the string
@@ -119,7 +130,7 @@ const useMention = (props: Props) => {
     }
 
     return textSplitted;
-  }, [mentioned, inputText, renderMentionForTextInput, renderTextForTextInput]);
+  }, [mentioned, inputText, renderText, renderMention]);
 
   const onPressMentionType = useCallback(
     (mentionType: string, localCursorPosition?: CursorPosition) => {
@@ -146,9 +157,7 @@ const useMention = (props: Props) => {
 
         setSearchMentionPosition(loaclSearchMentionPosition);
 
-        const mentionsType = mentionsTypes.find(
-          (mT) => mT.type === mentionType
-        );
+        const mentionsType = getObjectMention(mentionType);
 
         const newTextInput =
           inputText.slice(0, cursorPosition.start) +
@@ -171,13 +180,13 @@ const useMention = (props: Props) => {
       refreshData?.(mentionType, '');
     },
     [
-      cursorPosition.end,
+      refreshData,
       cursorPosition.start,
+      cursorPosition.end,
+      getObjectMention,
       inputText,
       mentioned,
       onChangeTextCallback,
-      refreshData,
-      mentionsTypes,
     ]
   );
 
@@ -225,9 +234,7 @@ const useMention = (props: Props) => {
 
         if (penultimateCharIsEmpty && afterLastTypedCharIsEmpty) {
           const lastTypedChar = changedText.charAt(localCursorPosition.start);
-          const mentionTypeRef = mentionsTypes.find(
-            (mT) => mT.mentionChar === lastTypedChar
-          );
+          const mentionTypeRef = getObjectMention(lastTypedChar);
           if (mentionTypeRef) {
             onPressMentionType(mentionTypeRef.type, localCursorPosition);
           }
@@ -259,7 +266,7 @@ const useMention = (props: Props) => {
       onPressMentionType,
       refreshData,
       searchMentionPosition,
-      mentionsTypes,
+      getObjectMention,
     ]
   );
 
@@ -289,11 +296,12 @@ const useMention = (props: Props) => {
   const addMention = useCallback(
     (mention: MentionListItem) => {
       const currentCursorPosition = searchMentionPosition ?? cursorPosition;
+      const mentionType = getObjectMention(mention.type);
       const newMention: Mention = {
         uuid: generateUUID(),
         id: mention.id,
         type: mention.type,
-        label: `${mention.mentionChar}${mention.label}`,
+        label: `${mentionType?.mentionChar}${mention.label}`,
         position: currentCursorPosition.start,
       };
 
@@ -317,6 +325,7 @@ const useMention = (props: Props) => {
       mentioned,
       onChangeTextCallback,
       closeMention,
+      getObjectMention,
     ]
   );
 

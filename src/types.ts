@@ -1,4 +1,11 @@
-import { TextInput, View, Text } from 'react-native';
+import {
+  TextInput,
+  TextInputProps,
+  KeyboardAvoidingViewProps,
+  ViewStyle,
+  StyleProp,
+  TextStyle,
+} from 'react-native';
 import React from 'react';
 
 export enum Typing {
@@ -15,7 +22,8 @@ export type MentionItemType = {
 export type MentionListItem = {
   id: string;
   label: string;
-} & MentionItemType;
+  type: string;
+};
 
 export type Mention = {
   uuid: string;
@@ -28,21 +36,6 @@ export type Mention = {
 export type CursorPosition = {
   start: number;
   end: number;
-};
-
-export type MentionableUsers = {
-  id: string;
-  uuid: string;
-  firstname: string;
-  lastname: string;
-  userid: string;
-};
-
-export type MentionableAsset = {
-  id: string;
-  title: string;
-  type: string;
-  uri: string;
 };
 
 export type MentionOrganizer = {
@@ -61,7 +54,7 @@ export type Props = {
   setInputRef?: (ref: React.ElementRef<typeof TextInput>) => void;
 
   placeholder?: string;
-  children?: any;
+  children?: JSX.Element | JSX.Element[];
   initialText?: string;
   initialMentioned?: Array<Mention>;
   isMentionsEnabled?: boolean;
@@ -70,8 +63,8 @@ export type Props = {
 
   //-----------------------------------------//
   // other props
-  textInputProps?: any;
-  keyboardAvoidingViewProps?: any;
+  textInputProps?: TextInputProps;
+  keyboardAvoidingViewProps?: KeyboardAvoidingViewProps;
   //-----------------------------------------//
 
   //-----------------------------------------//
@@ -94,14 +87,14 @@ export type Props = {
   //-----------------------------------------//
   // Customizations
   maxHeightMentionWindow?: number;
-  mentionWindowStyle?: any;
-  containerTextInputStyle?: any;
-  renderMentionForTextInput?: (text: string) => typeof Text;
-  renderTextForTextInput?: (text: string) => typeof Text;
-  iconSendForTextInput?: typeof View;
-  iconSendDisabledForTextInput?: typeof View;
-  iconMentionForTextInput?: typeof View;
-  iconCloseMentionForTextInput?: typeof View;
-  renderMentionType?: (mentionType: string) => typeof View;
+  mentionWindowStyle?: StyleProp<ViewStyle>;
+  containerTextInputStyle?: StyleProp<TextStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  mentionStyle?: StyleProp<TextStyle>;
+  iconSendForTextInput?: JSX.Element;
+  iconSendDisabledForTextInput?: JSX.Element;
+  iconMentionForTextInput?: JSX.Element;
+  iconCloseMentionForTextInput?: JSX.Element;
+  renderMentionType?: (mentionType: string) => JSX.Element;
   //-----------------------------------------//
 };

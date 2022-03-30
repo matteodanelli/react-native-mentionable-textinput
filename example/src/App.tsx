@@ -85,6 +85,8 @@ const App = () => {
         isMultilineEnabled
         mentionItems={userFound}
         isMentionsEnabled
+        mentionStyle={{ fontWeight: '900', color: 'blue' }}
+        textStyle={{ fontWeight: '500', color: 'red' }}
       />
     </SafeAreaView>
   );
