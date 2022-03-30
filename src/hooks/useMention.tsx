@@ -39,6 +39,7 @@ const useMention = (props: Props) => {
     mentionWindowStyle,
     containerTextInputStyle,
     renderMentionType,
+    separatorColor = 'grey',
   } = props;
 
   const renderMention = useCallback(
@@ -101,8 +102,12 @@ const useMention = (props: Props) => {
     }
   }, [chosenMentionType, onMentionClose]);
 
-  const getObjectMention = useCallback(
+  const getObjectMentionFromType = useCallback(
     (type: string) => mentionsTypes.find((mT) => mT.type === type),
+    [mentionsTypes]
+  );
+  const getObjectMentionFromChar = useCallback(
+    (char: string) => mentionsTypes.find((mT) => mT.mentionChar === char),
     [mentionsTypes]
   );
 
@@ -157,7 +162,7 @@ const useMention = (props: Props) => {
 
         setSearchMentionPosition(loaclSearchMentionPosition);
 
-        const mentionsType = getObjectMention(mentionType);
+        const mentionsType = getObjectMentionFromType(mentionType);
 
         const newTextInput =
           inputText.slice(0, cursorPosition.start) +
@@ -183,7 +188,7 @@ const useMention = (props: Props) => {
       refreshData,
       cursorPosition.start,
       cursorPosition.end,
-      getObjectMention,
+      getObjectMentionFromType,
       inputText,
       mentioned,
       onChangeTextCallback,
@@ -193,8 +198,6 @@ const useMention = (props: Props) => {
   const onChangeText = useCallback(
     (changedText: string) => {
       if (isMentionsEnabled) {
-        console.log(`[${inputText}]`);
-        console.log(`{${changedText}}`);
         const localCursorPosition = getCursorPointer(inputText, changedText);
 
         if (
@@ -234,7 +237,7 @@ const useMention = (props: Props) => {
 
         if (penultimateCharIsEmpty && afterLastTypedCharIsEmpty) {
           const lastTypedChar = changedText.charAt(localCursorPosition.start);
-          const mentionTypeRef = getObjectMention(lastTypedChar);
+          const mentionTypeRef = getObjectMentionFromChar(lastTypedChar);
           if (mentionTypeRef) {
             onPressMentionType(mentionTypeRef.type, localCursorPosition);
           }
@@ -266,7 +269,7 @@ const useMention = (props: Props) => {
       onPressMentionType,
       refreshData,
       searchMentionPosition,
-      getObjectMention,
+      getObjectMentionFromChar,
     ]
   );
 
@@ -296,7 +299,7 @@ const useMention = (props: Props) => {
   const addMention = useCallback(
     (mention: MentionListItem) => {
       const currentCursorPosition = searchMentionPosition ?? cursorPosition;
-      const mentionType = getObjectMention(mention.type);
+      const mentionType = getObjectMentionFromType(mention.type);
       const newMention: Mention = {
         uuid: generateUUID(),
         id: mention.id,
@@ -325,7 +328,7 @@ const useMention = (props: Props) => {
       mentioned,
       onChangeTextCallback,
       closeMention,
-      getObjectMention,
+      getObjectMentionFromType,
     ]
   );
 
@@ -386,6 +389,7 @@ const useMention = (props: Props) => {
     mentionWindowStyle,
     containerTextInputStyle,
     renderMentionType,
+    separatorColor,
   };
 };
 

@@ -34,7 +34,7 @@ const App = () => {
       <ScrollView>
         <Pressable>
           <Text>First</Text>
-          {[...new Array(50)].map(() => (
+          {[...new Array(5)].map(() => (
             <Text>test</Text>
           ))}
           <Text>End</Text>

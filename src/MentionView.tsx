@@ -14,11 +14,12 @@ type Props = {
   mentionsTypes: Array<MentionItemType>;
   showMentionTypes: boolean;
   showMentionItems: boolean;
-  mentionItems?: Array<MentionListItem>;
+  separatorColor: string;
+  onClose: () => void;
   addMention: (mention: MentionListItem) => void;
   onPressMentionType: (mentionType: string) => void;
+  mentionItems?: Array<MentionListItem>;
   showHeader?: boolean;
-  onClose: () => void;
   chosenMentionType?: string;
   renderMentionType?: (mentionType: string) => JSX.Element;
   renderMentionItem?: (mention: MentionListItem) => JSX.Element;
@@ -38,6 +39,7 @@ const MentionView = (props: Props) => {
     renderMentionItem,
     mentionWindowStyle,
     maxHeightMentionWindow = 200,
+    separatorColor,
   } = props;
 
   const renderMentionItemInternal = useCallback(
@@ -67,7 +69,7 @@ const MentionView = (props: Props) => {
   const renderMentionTypes = useMemo(
     () => (
       <View style={mentionWindowStyle}>
-        <View style={[styles.separator]} />
+        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
         {mentionsTypes.map((mentionType) => {
           return (
             <Pressable
@@ -87,7 +89,13 @@ const MentionView = (props: Props) => {
         })}
       </View>
     ),
-    [mentionWindowStyle, mentionsTypes, onPressMentionType, renderMentionType]
+    [
+      mentionWindowStyle,
+      mentionsTypes,
+      onPressMentionType,
+      renderMentionType,
+      separatorColor,
+    ]
   );
 
   if (showMentionTypes) {
@@ -99,7 +107,7 @@ const MentionView = (props: Props) => {
           maxHeight: maxHeightMentionWindow,
         }}
       >
-        <View style={[styles.separator]} />
+        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
         <FlatList
           removeClippedSubviews
           showsHorizontalScrollIndicator={false}

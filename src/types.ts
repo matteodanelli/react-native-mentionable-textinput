@@ -96,5 +96,6 @@ export type Props = {
   iconMentionForTextInput?: JSX.Element;
   iconCloseMentionForTextInput?: JSX.Element;
   renderMentionType?: (mentionType: string) => JSX.Element;
+  separatorColor?: string;
   //-----------------------------------------//
 };

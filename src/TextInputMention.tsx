@@ -51,6 +51,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       mentionWindowStyle,
       containerTextInputStyle,
       renderMentionType,
+      separatorColor,
     } = useMention(props);
 
     useImperativeHandle(
@@ -141,12 +142,15 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
               maxHeightMentionWindow={maxHeightMentionWindow}
               mentionWindowStyle={mentionWindowStyle}
               renderMentionType={renderMentionType}
+              separatorColor={separatorColor}
             />
           ) : (
             <View />
           )}
           {children}
-          <View style={[styles.separator]} />
+          <View
+            style={[styles.separator, { backgroundColor: separatorColor }]}
+          />
           <View style={[styles.textInputContainer, containerTextInputStyle]}>
             <TextInput
               style={[
@@ -176,7 +180,9 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
               </Pressable>
             </View>
           </View>
-          <View style={[styles.separator]} />
+          <View
+            style={[styles.separator, { backgroundColor: separatorColor }]}
+          />
         </View>
       </KeyboardAvoidingView>
     );
