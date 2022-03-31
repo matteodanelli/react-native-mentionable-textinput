@@ -60,7 +60,7 @@ export type Props = {
   isMentionsDisabled?: boolean;
   children?: JSX.Element | JSX.Element[];
   mentionableItems: Array<MentionListItem>; // reuslts of search
-  searchMentionableItems?: (mentionType: string, searchText: string) => void;
+  searchMentionableItems: (mentionType: string, searchText: string) => void;
   onChangeText?: (text: string, mentioned: Array<Mention>) => void;
   onMentionClose?: () => void;
   onSend: (text: string, mentioned: Array<Mention>) => void;
@@ -71,9 +71,9 @@ export type Props = {
   mentionContainerStyle?: StyleProp<ViewStyle>;
   textInputContainerStyle?: StyleProp<TextStyle>;
   separatorColor?: string;
-  submitIcon?: JSX.Element;
-  mentionIcon?: JSX.Element;
-  closeIcon?: JSX.Element;
+  submitIcon: JSX.Element;
+  mentionIcon: JSX.Element;
+  closeIcon: JSX.Element;
   textInputProps?: TextInputProps;
   keyboardAvoidingViewProps?: KeyboardAvoidingViewProps;
   maxHeightMentionWindow: number;

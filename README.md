@@ -47,7 +47,7 @@ import { TextInputMention } from "react-native-mentionable-textinput";
 | initialMentioned | Array<Mention> | ❌ | Every mention is contained in this array. Fill it with inital mention elements |
 | isMentionsDisabled | boolean | ❌ | False if text input should not have mentions |
 | isSendButtonDisabled | boolean | ❌ | True if text input submit button is disable. |
-| children | JSX.Element \| JSX.Element[] | ❌ | Optional view that will be attached above text input |
+| children | Array<JSX.Element> | ❌ | Optional view that will be attached above text input |
 | mentionableItems | Array<MentionListItem> | ✔️ | List of visible items that can be mentioned |
 | searchMentionableItems | (mentionType: string, searchText: string) => void | ✔️ | Search callback to filter mentionable items |
 | onChangeText | (text: string, mentioned: Array<Mention>) => void | ❌ | Callback passed to text input |
@@ -58,7 +58,7 @@ import { TextInputMention } from "react-native-mentionable-textinput";
 | textStyle | StyleProp<TextStyle> | ❌ | Style of text, excluded mentions |
 | mentionStyle | StyleProp<TextStyle> | ❌ | Style of mentions, included mention character |
 | mentionContainerStyle | StyleProp<ViewStyle> | ❌ | Style of mentions container view |
-| textInputContainerStyle?| StyleProp<TextStyle> | ❌ | Style of text input container |
+| textInputContainerStyle| StyleProp<TextStyle> | ❌ | Style of text input container |
 | separatorColor | string | ❌ | Color of the separator between text input and mention window |
 | submitIcon | JSX.Element | ✔️ | Icon for on submit action |
 | mentionIcon | JSX.Element | ✔️ | Icon for mention |
