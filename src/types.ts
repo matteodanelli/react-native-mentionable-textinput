@@ -58,6 +58,7 @@ export type TextInputMentionRef = {
 };
 
 export type Props = {
+  testID?: string;
   setInputRef?: (ref: React.ElementRef<typeof TextInput>) => void;
 
   mentionsTypes: Array<MentionItemType>;

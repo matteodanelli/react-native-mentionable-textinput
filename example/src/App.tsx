@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Alert, ScrollView, SafeAreaView, Text, Image } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  SafeAreaView,
+  Text,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import faker from './faker';
 import { type MentionListItem, TextInputMention } from '../../src/index';
 import send from './resources/send';
@@ -18,31 +25,35 @@ const channels = [...new Array(2500)].map((_, index) => ({
   type: 'channels',
 }));
 
-const App = () => {
-  // Styles
-  const iconStyle = {
+const styles = StyleSheet.create({
+  iconStyle: {
     width: 25,
     height: 25,
     marginLeft: 10,
     resizeMode: 'contain',
-  };
-  const containerStyle = {
+  },
+  containerStyle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  };
-  const flexStyle = { flex: 1 };
-  const mentionStyle = { fontWeight: '900', color: 'blue' };
-  const textStyle = { fontWeight: '500', color: 'red' };
+  },
+  flexStyle: { flex: 1 },
+  mentionStyle: { fontWeight: '900', color: 'blue' },
+  textStyle: { fontWeight: '500', color: 'red' },
+  textInputStyle: {
+    flex: 1,
+    maxHeight: 150,
+    textAlignVertical: 'center',
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+});
+
+const App = () => {
+  // Styles
   const textInputProps = {
     multiline: true,
-    style: {
-      flex: 1,
-      maxHeight: 150,
-      textAlignVertical: 'center',
-      paddingTop: 0,
-      paddingBottom: 0,
-    },
+    style: styles.textInputStyle,
   };
   // States
   const [itemsFound, setItemsFound] = useState<Array<MentionListItem>>([]);
@@ -69,11 +80,14 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={flexStyle}>
-      <ScrollView contentContainerStyle={containerStyle}>
-        <Text>Tag something typing @ in the textinput</Text>
+    <SafeAreaView style={styles.flexStyle}>
+      <ScrollView contentContainerStyle={styles.containerStyle}>
+        <Text testID="label-intro">
+          Tag something typing @ in the textinput
+        </Text>
       </ScrollView>
       <TextInputMention
+        testID="mention-component"
         mentionsTypes={[
           {
             type: 'users',
@@ -87,9 +101,9 @@ const App = () => {
         mentionableItems={itemsFound}
         searchMentionableItems={searchItems}
         onSend={onSubmit}
-        submitIcon={<Image style={iconStyle} source={{ uri: send }} />}
-        mentionIcon={<Image style={iconStyle} source={{ uri: email }} />}
-        closeIcon={<Image style={iconStyle} source={{ uri: close }} />}
+        submitIcon={<Image style={styles.iconStyle} source={{ uri: send }} />}
+        mentionIcon={<Image style={styles.iconStyle} source={{ uri: email }} />}
+        closeIcon={<Image style={styles.iconStyle} source={{ uri: close }} />}
         textInputProps={textInputProps}
         maxHeightMentionWindow={200}
         isSmartSearchEnabled={true}

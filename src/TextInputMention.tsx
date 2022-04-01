@@ -45,6 +45,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       renderMentionType,
       separatorColor,
       isSmartSearchEnabled,
+      testID,
     } = useMention(props);
 
     useImperativeHandle(
@@ -92,7 +93,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         {...keyboardAvoidingViewProps}
       >
-        <View>
+        <View testID={testID}>
           {!isMentionsDisabled ? (
             <MentionView
               showMentionItems={showMentionItems}

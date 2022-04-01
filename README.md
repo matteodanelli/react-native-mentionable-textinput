@@ -71,6 +71,12 @@ import { TextInputMention } from "react-native-mentionable-textinput";
 | maxHeightMentionWindow | number | ✔️ | Max height of mentions container view |
 | renderMentionType | (mentionType: string) => JSX.Element | ❌ | Custom render of mentionable items |
 
+## Detox
+```
+brew tap wix/brew
+brew install applesimutils
+```
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

@@ -46,6 +46,7 @@ const useMention = (props: Props) => {
     renderMentionType,
     separatorColor = 'grey',
     isSmartSearchEnabled,
+    testID,
   } = props;
 
   const renderMention = useCallback(
@@ -447,6 +448,7 @@ const useMention = (props: Props) => {
     renderMentionType,
     separatorColor,
     isSmartSearchEnabled,
+    testID,
   };
 };
 
