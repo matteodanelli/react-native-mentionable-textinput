@@ -38,6 +38,14 @@ export type CursorPosition = {
   end: number;
 };
 
+export type SearchCursorPosition = {
+  uuid: string;
+  start: number;
+  end: number;
+  pauseAt?: number;
+  type: string;
+};
+
 export type MentionOrganizer = {
   mentionsToDelete: Mention[];
   mentionsToKeep: Mention[];
@@ -45,7 +53,6 @@ export type MentionOrganizer = {
 
 export type TextInputMentionRef = {
   addMention: (mention: MentionListItem) => void;
-  closeMention: () => void;
   mentionItemsVisible: boolean;
   chosenMentionType?: string;
 };
@@ -58,6 +65,7 @@ export type Props = {
   placeholder?: string;
   initialMentioned?: Array<Mention>;
   isMentionsDisabled?: boolean;
+  isSmartSearchEnabled?: boolean;
   children?: JSX.Element | JSX.Element[];
   mentionableItems: Array<MentionListItem>; // reuslts of search
   searchMentionableItems: (mentionType: string, searchText: string) => void;

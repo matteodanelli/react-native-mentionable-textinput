@@ -28,7 +28,6 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       addMention,
       mentionableItems,
       onPressMentionType,
-      closeMention,
       mentionItemsVisible,
       chosenMentionType,
       submitIcon,
@@ -45,24 +44,24 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       textInputContainerStyle,
       renderMentionType,
       separatorColor,
+      isSmartSearchEnabled,
     } = useMention(props);
 
     useImperativeHandle(
       ref,
       () => ({
         addMention,
-        closeMention,
         mentionItemsVisible,
         chosenMentionType,
       }),
-      [addMention, closeMention, mentionItemsVisible, chosenMentionType]
+      [addMention, mentionItemsVisible, chosenMentionType]
     );
 
     const { hackCaretHidden, onFocus } = useXiaomiWorkaraound();
 
     const renderMentionIcon = useMemo(() => {
       if (!isMentionsDisabled) {
-        if (showMentionItems || showMentionTypes) {
+        if ((showMentionItems || showMentionTypes) && !isSmartSearchEnabled) {
           return (
             <Pressable onPress={onPressMentionIcon}>{closeIcon}</Pressable>
           );
@@ -81,6 +80,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       onPressMentionIcon,
       showMentionItems,
       showMentionTypes,
+      isSmartSearchEnabled,
     ]);
 
     const renderSendIcon = useMemo(() => {
@@ -100,7 +100,6 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
               addMention={addMention}
               mentionableItems={mentionableItems}
               onPressMentionType={onPressMentionType}
-              onClose={closeMention}
               chosenMentionType={chosenMentionType}
               mentionsTypes={mentionsTypes}
               maxHeightMentionWindow={maxHeightMentionWindow}

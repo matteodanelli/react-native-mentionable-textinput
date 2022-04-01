@@ -47,6 +47,7 @@ import { TextInputMention } from "react-native-mentionable-textinput";
 | initialMentioned | Array<Mention> | ❌ | Every mention is contained in this array. Fill it with inital mention elements |
 | isMentionsDisabled | boolean | ❌ | False if text input should not have mentions |
 | isSendButtonDisabled | boolean | ❌ | True if text input submit button is disable. |
+| isSmartSearchEnabled | boolean | ❌ | True if smart search should be enabled |
 | children | Array<JSX.Element> | ❌ | Optional view that will be attached above text input |
 | mentionableItems | Array<MentionListItem> | ✔️ | List of visible items that can be mentioned |
 | searchMentionableItems | (mentionType: string, searchText: string) => void | ✔️ | Search callback to filter mentionable items |

@@ -1,4 +1,10 @@
-import { CursorPosition, Mention, MentionOrganizer, Typing } from './types';
+import {
+  CursorPosition,
+  Mention,
+  MentionOrganizer,
+  SearchCursorPosition,
+  Typing,
+} from './types';
 
 const updateMentionedPositions = (
   mentioned: Mention[],
@@ -312,9 +318,87 @@ const getCursorPointer = (oldText: string, newText: string) => {
   }
 };
 
+const isCursorIsBetweenSearchMention = (
+  cursor: CursorPosition,
+  searchMention: SearchCursorPosition
+) => {
+  if (
+    (cursor.start > searchMention.start && cursor.start <= searchMention.end) ||
+    (cursor.end > searchMention.start && cursor.end <= searchMention.end) ||
+    Math.abs(searchMention.end - cursor.end) === 1
+  ) {
+    if (
+      searchMention.pauseAt &&
+      (cursor.start > searchMention.pauseAt ||
+        cursor.end > searchMention.pauseAt)
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  } else {
+    return false;
+  }
+};
+
+const shiftSearchCursorIfNeeded = (
+  cursor: CursorPosition,
+  searchMention: SearchCursorPosition,
+  oldText: string,
+  newText: string,
+  typing: Typing
+): SearchCursorPosition => {
+  if (typing === Typing.addedText) {
+    const cursorDifference = cursor.end - cursor.start;
+    const stringDifference = newText.length - oldText.length;
+    if (cursorDifference !== stringDifference) {
+    } else if (cursor.start < searchMention.start) {
+      return {
+        ...searchMention,
+        start: searchMention.start + cursorDifference,
+        end: searchMention.end + cursorDifference,
+        pauseAt: searchMention.pauseAt
+          ? searchMention.pauseAt + cursorDifference
+          : undefined,
+      };
+    }
+
+    return searchMention;
+  } else {
+    const cursorDifference = cursor.end - cursor.start;
+    const stringDifference = oldText.length - newText.length;
+    if (cursorDifference !== stringDifference) {
+    } else if (cursor.start < searchMention.start) {
+      return {
+        ...searchMention,
+        start: searchMention.start - cursorDifference,
+        end: searchMention.end - cursorDifference,
+        pauseAt: searchMention.pauseAt
+          ? searchMention.pauseAt - cursorDifference
+          : undefined,
+      };
+    }
+
+    return searchMention;
+  }
+};
+
+const isCursorIsBetweenMentionCharSearchMention = (
+  cursor: CursorPosition,
+  searchMention: CursorPosition
+) => {
+  // @ # /
+  return (
+    cursor.start <= searchMention.start && cursor.end >= searchMention.start
+  );
+};
+
 export {
   onChangeMentionableText,
   addMentionIntoText,
   generateUUID,
   getCursorPointer,
+  isCursorIsBetweenSearchMention,
+  isCursorIsBetweenMentionCharSearchMention,
+  shiftSearchCursorIfNeeded,
 };

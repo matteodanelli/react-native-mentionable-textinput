@@ -11,13 +11,11 @@ const users = [...new Array(2500)].map((_, index) => ({
   id: `${index}`,
   label: faker(),
   type: 'users',
-  mentionChar: '@',
 }));
 const channels = [...new Array(2500)].map((_, index) => ({
   id: `${index}`,
   label: faker(),
-  type: 'users',
-  mentionChar: '@',
+  type: 'channels',
 }));
 
 const App = () => {
@@ -94,6 +92,7 @@ const App = () => {
         closeIcon={<Image style={iconStyle} source={{ uri: close }} />}
         textInputProps={textInputProps}
         maxHeightMentionWindow={200}
+        isSmartSearchEnabled={true}
       />
     </SafeAreaView>
   );

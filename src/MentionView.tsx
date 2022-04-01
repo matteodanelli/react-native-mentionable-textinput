@@ -15,7 +15,6 @@ type Props = {
   showMentionTypes: boolean;
   showMentionItems: boolean;
   separatorColor: string;
-  onClose: () => void;
   addMention: (mention: MentionListItem) => void;
   onPressMentionType: (mentionType: string) => void;
   mentionableItems?: Array<MentionListItem>;
