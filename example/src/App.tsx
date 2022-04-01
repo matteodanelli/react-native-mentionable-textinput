@@ -6,12 +6,16 @@ import {
   Text,
   Image,
   StyleSheet,
+  TextInputProps,
 } from 'react-native';
 import faker from './faker';
 import { type MentionListItem, TextInputMention } from '../../src/index';
 import send from './resources/send';
 import email from './resources/email';
 import close from './resources/close';
+
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs();
 
 // Mock data
 const users = [...new Array(2500)].map((_, index) => ({
@@ -51,8 +55,9 @@ const styles = StyleSheet.create({
 
 const App = () => {
   // Styles
-  const textInputProps = {
+  const textInputProps: TextInputProps = {
     multiline: true,
+    textContentType: 'password',
     style: styles.textInputStyle,
   };
   // States

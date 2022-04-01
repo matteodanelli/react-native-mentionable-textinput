@@ -46,6 +46,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       separatorColor,
       isSmartSearchEnabled,
       testID,
+      mentioned,
     } = useMention(props);
 
     useImperativeHandle(
@@ -93,6 +94,10 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         {...keyboardAvoidingViewProps}
       >
+        <View
+          testID="mention-check-value"
+          accessibilityLabel={JSON.stringify(mentioned)}
+        />
         <View testID={testID}>
           {!isMentionsDisabled ? (
             <MentionView
@@ -128,6 +133,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
               onSelectionChange={onSelectionChange}
               onEndEditing={onEndTyping}
               {...textInputProps}
+              testID="mention-input-text"
             >
               {formattedText}
             </TextInput>

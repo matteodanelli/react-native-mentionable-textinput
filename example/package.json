@@ -7,7 +7,7 @@
     "test": "jest",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "react-native start --reset-cache",
     "e2e:ios-test": "detox test -c ios.sim.debug -l verbose",
     "e2e:ios-build": "detox build -c ios.sim.debug"
   },
@@ -29,6 +29,7 @@
     "@typescript-eslint/parser": "^5.7.0",
     "babel-jest": "^27.5.1",
     "detox": "^19.5.7",
+    "detox-getprops": "^0.1.2",
     "eslint": "^7.14.0",
     "eslint-plugin-detox": "^1.0.0",
     "jest": "27.1.1",

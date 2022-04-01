@@ -42,9 +42,10 @@ const MentionView = (props: Props) => {
   } = props;
 
   const renderMentionItemInternal = useCallback(
-    ({ item }: { item: MentionListItem }) => {
+    ({ item, index }: { item: MentionListItem; index: number }) => {
       return (
         <Pressable
+          testID={`mention-item-${index}`}
           onPress={() => {
             addMention(item);
           }}
@@ -52,7 +53,12 @@ const MentionView = (props: Props) => {
           {renderMentionItem ? (
             renderMentionItem
           ) : (
-            <Text style={styles.mentionResultListItemText}>{item.label}</Text>
+            <Text
+              testID={`mention-item-${index}-text`}
+              style={styles.mentionResultListItemText}
+            >
+              {item.label}
+            </Text>
           )}
         </Pressable>
       );
@@ -72,6 +78,7 @@ const MentionView = (props: Props) => {
         {mentionsTypes.map((mentionType) => {
           return (
             <Pressable
+              testID={`mention-type-${mentionType.type}`}
               onPress={() => {
                 onPressMentionType(mentionType.type);
               }}
