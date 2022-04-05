@@ -8,7 +8,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start --reset-cache",
-    "e2e:ios-test": "detox test -c ios.sim.debug -l verbose",
+    "e2e:ios-test": "detox test -c ios.sim.debug",
     "e2e:ios-build": "detox build -c ios.sim.debug"
   },
   "dependencies": {

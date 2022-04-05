@@ -5,7 +5,7 @@
       "binaryPath": "./ios/build/Build/Products/Debug-iphonesimulator/MentionableTextinputExample.app",
       "build": "xcodebuild -workspace ios/MentionableTextinputExample.xcworkspace -scheme MentionableTextinputExample -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
       "type": "ios.simulator",
-      "name": "iPhone 12"
+      "name": "iPhone 13"
     },
     "android.emu.debug": {
       "type": "android.emulator",
