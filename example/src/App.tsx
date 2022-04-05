@@ -85,7 +85,7 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={styles.flexStyle}>
+    <SafeAreaView style={styles.flexStyle} testID="mention-app">
       <ScrollView contentContainerStyle={styles.containerStyle}>
         <Text testID="label-intro">
           Tag something typing @ in the textinput

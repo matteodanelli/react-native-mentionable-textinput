@@ -92,6 +92,7 @@ const useMention = (props: Props) => {
   }, []);
 
   const {
+    searchMentionPositions,
     addSearchMentionPosition,
     setSearchMentionHoverUUID,
     searchMentionHovering,
@@ -449,6 +450,7 @@ const useMention = (props: Props) => {
     separatorColor,
     isSmartSearchEnabled,
     testID,
+    searchMentionPositions,
   };
 };
 

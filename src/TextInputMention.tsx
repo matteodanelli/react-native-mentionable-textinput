@@ -47,6 +47,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       isSmartSearchEnabled,
       testID,
       mentioned,
+      searchMentionPositions,
     } = useMention(props);
 
     useImperativeHandle(
@@ -65,11 +66,15 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
       if (!isMentionsDisabled) {
         if ((showMentionItems || showMentionTypes) && !isSmartSearchEnabled) {
           return (
-            <Pressable onPress={onPressMentionIcon}>{closeIcon}</Pressable>
+            <Pressable onPress={onPressMentionIcon} testID="mention-button">
+              {closeIcon}
+            </Pressable>
           );
         } else {
           return (
-            <Pressable onPress={onPressMentionIcon}>{mentionIcon}</Pressable>
+            <Pressable onPress={onPressMentionIcon} testID="mention-button">
+              {mentionIcon}
+            </Pressable>
           );
         }
       } else {
@@ -97,6 +102,10 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
         <View
           testID="mention-check-value"
           accessibilityLabel={JSON.stringify(mentioned)}
+        />
+        <View
+          testID="search-mention-check-value"
+          accessibilityLabel={JSON.stringify(searchMentionPositions)}
         />
         <View testID={testID}>
           {!isMentionsDisabled ? (

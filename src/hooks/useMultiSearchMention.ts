@@ -146,6 +146,7 @@ const useMultiSearchMention = (props: Props) => {
   );
 
   return {
+    searchMentionPositions,
     setSearchMentionHoverUUID,
     searchMentionHovering,
     pauseSearchMentionPosition,
