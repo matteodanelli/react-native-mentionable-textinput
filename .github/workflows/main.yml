@@ -10,7 +10,6 @@ on:
       - '*'         # matches every branch that doesn't contain a '/'
       - '*/*'       # matches every branch containing a single '/'
       - '**'        # matches every branch
-      - '!master'   # excludes master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,7 +39,7 @@ jobs:
       run: yarn install
 
     - name: Install Dependencies
-      run: cd example && yarn install
+      run: cd example && yarn install --ignore-engines
 
     - name: Cache Pods
       uses: actions/cache@v1
