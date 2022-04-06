@@ -60,18 +60,18 @@ jobs:
       if: steps.cacheApp.outputs.cache-hit != 'true'
       run: cd example && yarn install --ignore-engines
 
-    - name: Cache Pods
-      uses: actions/cache@v1
-      id: podcache
-      with:
-        path: example/ios/Pods
-        key: pods-${{ hashFiles('**/Podfile.lock') }}
+    # - name: Cache Pods
+    #   uses: actions/cache@v1
+    #   id: podcache
+    #   with:
+    #     path: example/ios/Pods
+    #     key: pods-${{ hashFiles('**/Podfile.lock') }}
 
-    - name: Update Pods
-      run: gem update cocoapods xcodeproj && cd example && cd ios && pod install --repo-update && cd ..
-      shell: bash
+    # - name: Update Pods
+    #   run: gem update cocoapods xcodeproj && cd example && cd ios && pod install --repo-update && cd ..
+    #   shell: bash
 
-    - run: brew tap wix/brew
-    - run: brew install applesimutils
-    - run: yarn e2e:ios-build
-    - run: yarn e2e:ios-test
+    # - run: brew tap wix/brew
+    # - run: brew install applesimutils
+    # - run: yarn e2e:ios-build
+    # - run: yarn e2e:ios-test
