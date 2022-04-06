@@ -28,6 +28,9 @@ jobs:
       with:
         fetch-depth: 1
 
+    - name: Set XCode Version
+      run: sudo xcode-select -s /Applications/Xcode_13.2.1.app
+
     - name: Node
       uses: actions/setup-node@v1
 
@@ -65,9 +68,9 @@ jobs:
         key: pods-${{ hashFiles('**/Podfile.lock') }}
 
     - name: Update Pods
-      run: |
-        gem update cocoapods xcodeproj
-        cd example && cd ios && pod install && cd ..
+      run: gem update cocoapods xcodeproj && cd example && cd ios && pod install --repo-update && cd ..
+      shell: bash
+
     - run: brew tap wix/brew
     - run: brew install applesimutils
     - run: yarn e2e:ios-build
