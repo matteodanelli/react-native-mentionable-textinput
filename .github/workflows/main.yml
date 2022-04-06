@@ -39,14 +39,14 @@ jobs:
       id: cacheLib
       with:
         path: node_modules
-        key: node-modules-${{ hashFiles('yarn.lock') }}
+        key: node-modules-new-${{ hashFiles('yarn.lock') }}
 
     - name: Cache App
       uses: actions/cache@v1
       id: cacheApp
       with:
         path: example/node_modules
-        key: node-modules-${{ hashFiles('example/yarn.lock') }}
+        key: node-modules-new-${{ hashFiles('example/yarn.lock') }}
 
     - name: Install Dependencies Lib
       if: steps.cacheLib.outputs.cache-hit != 'true'
@@ -54,7 +54,7 @@ jobs:
 
     - name: Install Dependencies App
       if: steps.cacheApp.outputs.cache-hit != 'true'
-      run: cd example && yarn install --ignore-engines
+      run: cd example && yarn install
 
     - name: Cache Pods
       uses: actions/cache@v1
