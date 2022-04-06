@@ -3,6 +3,7 @@ import {
   initializeMention,
   typeMention,
   typeAndSelectMention,
+  getTextInputText,
 } from './utility';
 
 const jestExpect = require('expect');
@@ -120,6 +121,35 @@ describe('Mentions Test', () => {
     await typeAndSelectMention();
 
     await element(by.id('mention-input-text')).typeText(' end line');
+  });
+
+  it('mention: replace a part of text before mention', async () => {
+    let mentioned = [];
+    await initializeMention('some text');
+    await element(by.id('mention-input-text')).typeText(' other');
+
+    const currentText = await getTextInputText();
+
+    mentioned = JSON.parse(
+      ((await element(by.id('mention-check-value')).getAttributes()) as any)
+        .label
+    );
+
+    jestExpect(mentioned.length).toBe(1);
+
+    await element(by.id('mention-input-text')).replaceText(
+      'some new casual text ' + currentText.slice(10)
+    );
+
+    await element(by.id('mention-input-text')).typeText(' end line');
+
+    mentioned = JSON.parse(
+      ((await element(by.id('mention-check-value')).getAttributes()) as any)
+        .label
+    );
+
+    jestExpect(mentioned.length).toBe(1);
+    jestExpect(mentioned[0].position).toBe('some new casual text '.length);
   });
 
   it('search mention: check if exists', async () => {
@@ -301,135 +331,134 @@ describe('Mentions Test', () => {
     jestExpect(searchMention[0].start).toBe('hello \n \n new line \n'.length);
   });
 
+  it('mention: cut and paste a part of text before mention', async () => {
+    let mentioned = [];
+    await initializeMention('some textreallylong');
+
+    await element(by.id('mention-input-text')).tap({ x: 35, y: 5 });
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Paste')).atIndex(0).tap();
+
+    mentioned = JSON.parse(
+      ((await element(by.id('mention-check-value')).getAttributes()) as any)
+        .label
+    );
+
+    jestExpect(mentioned.length).toBe(1);
+  });
+
   /**
    * TO FIX
    */
 
-  // it('search mention: delete end line near search mention', async () => {
-  //   await element(by.id('mention-input-text')).typeText(
-  //     'hello \n new line \n \n'
-  //   );
+  it('search mention: delete end line near search mention', async () => {
+    await element(by.id('mention-input-text')).typeText(
+      'hello \n new line \n \n'
+    );
 
-  //   await element(by.id('mention-button')).tap();
-  //   await element(by.label('users')).tap();
+    await element(by.id('mention-button')).tap();
+    await element(by.label('users')).tap();
 
-  //   const inputTextValue = await typeMention();
+    const inputTextValue = await typeMention();
 
-  //   const lines = inputTextValue.split('\n');
+    const lines = inputTextValue.split('\n');
 
-  //   await element(by.id('mention-input-text')).replaceText(
-  //     'hello \n new line \n' + lines[lines.length - 1]
-  //   );
+    await element(by.id('mention-input-text')).replaceText(
+      'hello \n new line \n' + lines[lines.length - 1]
+    );
 
-  //   const searchMention = JSON.parse(
-  //     (
-  //       (await element(
-  //         by.id('search-mention-check-value')
-  //       ).getAttributes()) as any
-  //     ).label
-  //   );
+    const searchMention = JSON.parse(
+      (
+        (await element(
+          by.id('search-mention-check-value')
+        ).getAttributes()) as any
+      ).label
+    );
 
-  //   jestExpect(searchMention.length).toBe(1);
-  // });
+    jestExpect(searchMention.length).toBe(1);
+  });
 
-  // it('search mention: add end line near search mention', async () => {
-  //   await element(by.id('mention-input-text')).typeText('hello \n new line \n');
+  it('search mention: add end line near search mention', async () => {
+    await element(by.id('mention-input-text')).typeText('hello \n new line \n');
 
-  //   await element(by.id('mention-button')).tap();
-  //   await element(by.label('users')).tap();
+    await element(by.id('mention-button')).tap();
+    await element(by.label('users')).tap();
 
-  //   const inputTextValue = await typeMention();
+    const inputTextValue = await typeMention();
 
-  //   const lines = inputTextValue.split('\n');
+    const lines = inputTextValue.split('\n');
 
-  //   await element(by.id('mention-input-text')).replaceText(
-  //     'hello \n new line \n \n' + lines[lines.length - 1]
-  //   );
+    await element(by.id('mention-input-text')).replaceText(
+      'hello \n new line \n \n' + lines[lines.length - 1]
+    );
 
-  //   const searchMention = JSON.parse(
-  //     (
-  //       (await element(
-  //         by.id('search-mention-check-value')
-  //       ).getAttributes()) as any
-  //     ).label
-  //   );
+    const searchMention = JSON.parse(
+      (
+        (await element(
+          by.id('search-mention-check-value')
+        ).getAttributes()) as any
+      ).label
+    );
 
-  //   jestExpect(searchMention.length).toBe(1);
-  // });
+    jestExpect(searchMention.length).toBe(1);
+  });
 
-  // it('mention: cut and paste a part of text before mention', async () => {
-  //   let mentioned = [];
-  //   await initializeMention('some textreallylong');
+  it('search mention: cut and paste a part of text before search mention', async () => {
+    let mentioned = [];
+    await element(by.id('mention-input-text')).typeText(
+      'hi alex, do you know '
+    );
 
-  //   await element(by.id('mention-input-text')).tap({ x: 35, y: 5 });
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Cut')).atIndex(0).tap();
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Paste')).atIndex(0).tap();
+    await element(by.id('mention-button')).tap();
+    await element(by.label('users')).tap();
 
-  //   mentioned = JSON.parse(
-  //     ((await element(by.id('mention-check-value')).getAttributes()) as any)
-  //       .label
-  //   );
+    await typeMention();
 
-  //   jestExpect(mentioned.length).toBe(1);
-  //   jestExpect(mentioned[0].position).toBe('some '.length);
-  // });
+    await element(by.id('mention-input-text')).tap({ x: 50, y: 5 });
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Paste')).atIndex(0).tap();
 
-  // it('search mention: cut and paste a part of text before search mention', async () => {
-  //   let mentioned = [];
-  //   await element(by.id('mention-input-text')).typeText(
-  //     'hi alex, do you know '
-  //   );
+    mentioned = JSON.parse(
+      (
+        (await element(
+          by.id('search-mention-check-value')
+        ).getAttributes()) as any
+      ).label
+    );
 
-  //   await element(by.id('mention-button')).tap();
-  //   await element(by.label('users')).tap();
+    jestExpect(mentioned.length).toBe(1);
+    jestExpect(mentioned[0].start).toBe('hi do you know '.length);
+  });
 
-  //   await typeMention();
+  it('search mention: cut and paste direct part before search mention', async () => {
+    let mentioned = [];
+    await element(by.id('mention-input-text')).typeText(
+      'hi alex, do you know '
+    );
 
-  //   await element(by.id('mention-input-text')).tap({ x: 50, y: 5 });
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Cut')).atIndex(0).tap();
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Paste')).atIndex(0).tap();
+    await element(by.id('mention-button')).tap();
+    await element(by.label('users')).tap();
 
-  //   mentioned = JSON.parse(
-  //     (
-  //       (await element(
-  //         by.id('search-mention-check-value')
-  //       ).getAttributes()) as any
-  //     ).label
-  //   );
+    await typeMention();
 
-  //   jestExpect(mentioned.length).toBe(1);
-  //   jestExpect(mentioned[0].start).toBe('hi do you know '.length);
-  // });
+    await element(by.id('mention-input-text')).tap({ x: 120, y: 5 });
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.label('Paste')).atIndex(0).tap();
 
-  // it('search mention: cut and paste direct part before search mention', async () => {
-  //   let mentioned = [];
-  //   await element(by.id('mention-input-text')).typeText(
-  //     'hi alex, do you know '
-  //   );
+    mentioned = JSON.parse(
+      (
+        (await element(
+          by.id('search-mention-check-value')
+        ).getAttributes()) as any
+      ).label
+    );
 
-  //   await element(by.id('mention-button')).tap();
-  //   await element(by.label('users')).tap();
-
-  //   await typeMention();
-
-  //   await element(by.id('mention-input-text')).tap({ x: 120, y: 5 });
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Cut')).atIndex(0).tap();
-  //   await element(by.id('mention-input-text')).multiTap(2);
-  //   await element(by.label('Paste')).atIndex(0).tap();
-
-  //   mentioned = JSON.parse(
-  //     (
-  //       (await element(
-  //         by.id('search-mention-check-value')
-  //       ).getAttributes()) as any
-  //     ).label
-  //   );
-
-  //   jestExpect(mentioned.length).toBe(1);
-  // });
+    jestExpect(mentioned.length).toBe(1);
+  });
 });
