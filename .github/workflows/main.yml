@@ -64,7 +64,7 @@ jobs:
         key: pods-${{ hashFiles('**/Podfile.lock') }}
 
     - name: Update Pods
-      run: gem update cocoapods xcodeproj && cd example && cd ios && pod install --repo-update && cd ..
+      run: gem update cocoapods xcodeproj && cd example && cd ios && LANG=en_US.UTF-8 && pod install --repo-update && cd ..
       shell: bash
 
     - run: brew tap wix/brew
