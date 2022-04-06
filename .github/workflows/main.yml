@@ -48,10 +48,6 @@ jobs:
         path: example/node_modules
         key: node-modules-${{ hashFiles('example/yarn.lock') }}
 
-    - name: Rebuild detox
-      if: steps.cacheLib.outputs.cache-hit == 'true' || steps.cacheApp.outputs.cache-hit == 'true'
-      run: yarn detox clean-framework-cache && yarn detox build-framework-cache
-
     - name: Install Dependencies Lib
       if: steps.cacheLib.outputs.cache-hit != 'true'
       run: yarn install
