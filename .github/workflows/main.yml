@@ -31,28 +31,44 @@ jobs:
     - name: Node
       uses: actions/setup-node@v1
 
+    - name: Cache Lib
+      uses: actions/cache@v1
+      id: cacheLib
+      with:
+        path: node_modules
+        key: node-modules-${{ hashFiles('yarn.lock') }}
+
+    - name: Cache App
+      uses: actions/cache@v1
+      id: cacheApp
+      with:
+        path: example/node_modules
+        key: node-modules-${{ hashFiles('example/yarn.lock') }}
+
     - name: Rebuild detox
-      if: steps.cache.outputs.cache-hit == 'true'
+      if: steps.cacheLib.outputs.cache-hit == 'true' || steps.cacheApp.outputs.cache-hit == 'true'
       run: yarn detox clean-framework-cache && yarn detox build-framework-cache
 
-    - name: Install Dependencies
+    - name: Install Dependencies Lib
+      if: steps.cacheLib.outputs.cache-hit != 'true'
       run: yarn install
 
-    - name: Install Dependencies
+    - name: Install Dependencies App
+      if: steps.cacheApp.outputs.cache-hit != 'true'
       run: cd example && yarn install --ignore-engines
 
     - name: Cache Pods
       uses: actions/cache@v1
       id: podcache
       with:
-        path: ios/Pods
+        path: example/ios/Pods
         key: pods-${{ hashFiles('**/Podfile.lock') }}
 
     - name: Update Pods
       run: |
         gem update cocoapods xcodeproj
-        cd ios && pod install && cd ..
+        cd example && cd ios && pod install && cd ..
     - run: brew tap wix/brew
     - run: brew install applesimutils
-    - run: cd example && yarn e2e:ios-build
-    - run: cd example && yarn e2e:ios-test
+    - run: yarn e2e:ios-build
+    - run: yarn e2e:ios-test
