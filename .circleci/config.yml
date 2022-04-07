@@ -1,27 +1,31 @@
 version: 2.1
 
+jobs:
+  build:
+    docker:
+      - image: cimg/node:lts
+
 commands:
+  # node-version:
+  #   description: "Install node version 16"
+  #   steps:
+  #     - run:
+  #         name: 'Install Project Node'
+  #         command: |
+  #           set +x
+  #           source ~/.bashrc
 
-  node-version:
-    description: "Install node version 16"
-    steps:
-      - run:
-          name: 'Install Project Node'
-          command: |
-            set +x
-            source ~/.bashrc
+  #           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  #           export NVM_DIR="$HOME/.nvm"
+  #           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  #           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  #           nvm install 16
+  #           NODE_DIR=$(dirname $(which node))
+  #           echo "export PATH=$NODE_DIR:\$PATH" >> $BASH_ENV
 
-            nvm install 16
-            NODE_DIR=$(dirname $(which node))
-            echo "export PATH=$NODE_DIR:\$PATH" >> $BASH_ENV
-
-            curl -o- -L https://yarnpkg.com/install.sh | bash
-            echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
+  #           curl -o- -L https://yarnpkg.com/install.sh | bash
+  #           echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
 
   yarn-dependencies:
     description: "Get JavaScript dependencies"
@@ -119,13 +123,13 @@ commands:
   #           - /Users/distiller/android-tools
 
 
-  react-native-dependencies:
-    description: "Install RN dependencies"
-    steps:
-      - run:
-          name: "Install watchman"
-          command: |
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install watchman
+  # react-native-dependencies:
+  #   description: "Install RN dependencies"
+  #   steps:
+  #     - run:
+  #         name: "Install watchman"
+  #         command: |
+  #           HOMEBREW_NO_AUTO_UPDATE=1 brew install watchman
 
 
   simulator-dependencies:
@@ -208,10 +212,8 @@ jobs:
       - attach_workspace:
           at: .
       - checkout
-      - node-version
       - yarn-dependencies
       - pods-dependencies
-      - react-native-dependencies
       - simulator-dependencies
       - clear-detox-cache
 
@@ -225,13 +227,13 @@ jobs:
           name: Run iOS detox test
           command: npx detox test -c ios.sim.debug --record-logs all > test-summary.txt
 
-      - store_artifacts:
-          path: ././artifacts
-          destination: ./jest-logs
+      # - store_artifacts:
+      #     path: ././artifacts
+      #     destination: ./jest-logs
 
-      - store_artifacts:
-          path: ././reports
-          destination: ./reports
+      # - store_artifacts:
+      #     path: ././reports
+      #     destination: ./reports
 
 
 workflows:

@@ -2,6 +2,7 @@
 
 ReactNative TextInput with enhanced capabilities for mentions
 
+[![CircleCI](https://circleci.com/gh/matteodanelli/react-native-mentionable-textinput/tree/main.svg?style=svg)](https://circleci.com/gh/matteodanelli/react-native-mentionable-textinput/tree/main)
 ## Installation
 
 ```sh
