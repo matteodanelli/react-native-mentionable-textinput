@@ -815,7 +815,7 @@ describe('Mentions', () => {
     const newlabelPosition1 = 'ciao '.length;
     const newlabelPosition2 = 'ciao @Giacomo e '.length;
     expect(JSON.stringify(newMentioned)).toBe(
-      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition1},\"type\":\"user\"},{"uuid":"uuid2","id":"1","label":"@Giacomo","position":${newlabelPosition2},\"type\":\"user\"}]`
+      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition1},"type":"user"},{"uuid":"uuid2","id":"1","label":"@Giacomo","position":${newlabelPosition2},"type":"user"}]`
     );
     expect(newText).toBe('ciao @Giacomo e @Giacomo');
   });
