@@ -164,10 +164,9 @@ commands:
 
 
 jobs:
-
-  setup:
-    docker:
-      - image: cimg/node:lts
+  ios-test:
+    macos:
+      xcode: 13.3.0
     steps:
       - attach_workspace:
           at: .
@@ -175,48 +174,6 @@ jobs:
       - yarn-dependencies
       - pods-dependencies
       - simulator-dependencies
-
-  # android-test:
-  #   macos:
-  #     xcode: 11.3.1
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-  #     - checkout
-  #     - node-version
-  #     - bundle-dependencies
-  #     - npm-dependencies
-  #     - react-native-dependencies
-  #     - gradle-dependencies
-  #     - android-sdk-dependencies
-  #     - create-launch-android-emulator
-  #     - clear-detox-cache
-
-  #     - run:
-  #         working_directory: .
-  #         name: Run android detox build
-  #         command: npx detox build -c android.emu.release
-
-  #     - run:
-  #         working_directory: .
-  #         name: Run android detox test
-  #         command: npx detox test -c android.emu.release --headless --record-logs all
-
-  #     - store_artifacts:
-  #         path: ././artifacts
-  #         destination: ./jest-logs
-
-  #     - store_artifacts:
-  #         path: ././reports
-  #         destination: ./reports
-
-
-  ios-test:
-    macos:
-      xcode: 13.3.0
-    steps:
-      - attach_workspace:
-          at: .
       - clear-detox-cache
       - run:
           working_directory: ./example
@@ -238,9 +195,6 @@ jobs:
 
 
 workflows:
-  version: 2
-
   run_detox_tests:
     jobs:
-      - setup
       - ios-test
