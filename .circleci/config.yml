@@ -40,6 +40,10 @@ commands:
           key: v1-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
           paths:
             - ././node_modules
+      - run:
+          working_directory: .
+          name: run jest test
+          command: yarn test
       - restore_cache:
           name: Restore yarn app-example cache
           key: v1-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
@@ -175,6 +179,7 @@ jobs:
       - pods-dependencies
       - simulator-dependencies
       - clear-detox-cache
+
       - run:
           working_directory: ./example
           name: Run iOS detox build
