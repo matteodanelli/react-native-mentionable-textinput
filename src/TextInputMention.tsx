@@ -131,7 +131,7 @@ const TextInputMention = forwardRef<TextInputMentionRef, Props>(
           />
           <View style={[styles.textInputContainer, textInputContainerStyle]}>
             <TextInput
-              style={{ flex: 1 }}
+              style={styles.textInput}
               ref={setInputTextRefCallback}
               onChangeText={onChangeText}
               enablesReturnKeyAutomatically

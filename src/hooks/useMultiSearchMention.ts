@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
   generateUUID,
-  isCursorIsBetweenMentionCharSearchMention,
   isCursorIsBetweenSearchMention,
   shiftSearchCursorIfNeeded,
 } from '../helper';
@@ -96,37 +95,38 @@ const useMultiSearchMention = (props: Props) => {
           );
           return searchMentionPositionShifted;
         })
+        .map((searchMentionPosition) => {
+          if (searchMentionPosition) {
+            if (isCursorIsBetweenSearchMention(cursor, searchMentionPosition)) {
+              setSearchMentionHoverUUID(searchMentionPosition.uuid);
+              searchPositionFound = {
+                ...searchMentionPosition,
+                end:
+                  typing === Typing.addedText
+                    ? Math.max(cursor.end, searchMentionPosition.end)
+                    : Math.min(cursor.end, searchMentionPosition.end),
+                pauseAt: undefined,
+              };
+              return searchPositionFound;
+            } else {
+              return searchMentionPosition;
+            }
+          } else {
+            return undefined;
+          }
+        })
         .filter((searchMentionPosition) => {
-          if (
-            isCursorIsBetweenMentionCharSearchMention(
-              cursor,
-              searchMentionPosition
-            )
-          ) {
+          if (!searchMentionPosition) {
             // if user added or removed some text into mention char trigger
             closeMention();
             return false;
           }
           return true;
-        })
-        .map((searchMentionPosition) => {
-          if (isCursorIsBetweenSearchMention(cursor, searchMentionPosition)) {
-            setSearchMentionHoverUUID(searchMentionPosition.uuid);
-            searchPositionFound = {
-              ...searchMentionPosition,
-              end:
-                typing === Typing.addedText
-                  ? Math.max(cursor.end, searchMentionPosition.end)
-                  : Math.min(cursor.end, searchMentionPosition.end),
-              pauseAt: undefined,
-            };
-            return searchPositionFound;
-          } else {
-            return searchMentionPosition;
-          }
         });
 
-      refreshSearchMentionPositions(newSearchMentionPositions);
+      refreshSearchMentionPositions(
+        newSearchMentionPositions as SearchCursorPosition[]
+      );
 
       return searchPositionFound;
     },

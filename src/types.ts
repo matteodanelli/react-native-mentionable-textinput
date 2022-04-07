@@ -44,11 +44,13 @@ export type SearchCursorPosition = {
   end: number;
   pauseAt?: number;
   type: string;
+  toRemove?: boolean;
 };
 
 export type MentionOrganizer = {
   mentionsToDelete: Mention[];
   mentionsToKeep: Mention[];
+  isRemovedSomeMention: boolean;
 };
 
 export type TextInputMentionRef = {

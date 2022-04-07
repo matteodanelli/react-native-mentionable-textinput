@@ -89,4 +89,15 @@ describe('Strings', () => {
       JSON.stringify({ start, end, type: Typing.deletedText })
     );
   });
+
+  it('getCursorPointer: replace text', () => {
+    const oldText = 'hello some text';
+    const newText = 'helly text';
+
+    const start = 'hell'.length;
+    const end = 'helly some'.length;
+    expect(JSON.stringify(getCursorPointer(oldText, newText))).toBe(
+      JSON.stringify({ start, end, type: Typing.addedText })
+    );
+  });
 });
