@@ -165,9 +165,16 @@ commands:
 
 jobs:
 
-  build:
+  setup:
     docker:
       - image: cimg/node:lts
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      - yarn-dependencies
+      - pods-dependencies
+      - simulator-dependencies
 
   # android-test:
   #   macos:
@@ -210,12 +217,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - checkout
-      - yarn-dependencies
-      - pods-dependencies
-      - simulator-dependencies
       - clear-detox-cache
-
       - run:
           working_directory: ./example
           name: Run iOS detox build
