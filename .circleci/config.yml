@@ -242,4 +242,5 @@ workflows:
 
   run_detox_tests:
     jobs:
+      - setup
       - ios-test
