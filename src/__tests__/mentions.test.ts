@@ -121,7 +121,7 @@ describe('Mentions', () => {
     ];
     const { newText, newMentioned } = onChangeMentionableText({
       oldText: 'ciao @mention',
-      changedText: 'ciao @mention',
+      changedText: 'ciao @menti',
       mentioned,
       cursorPosition: {
         start: 'ciao '.length,
@@ -596,6 +596,90 @@ describe('Mentions', () => {
     expect(newText).toBe('ciao  @Giacomo');
   });
 
+  it('mentions: replace a lot of text before mention case 1', () => {
+    const mentioned = [
+      {
+        uuid: 'uuid1',
+        id: '1',
+        label: '@Yellowish Restaurant',
+        position: 'some text '.length,
+        type: 'user',
+      },
+    ];
+    const { newText, newMentioned } = onChangeMentionableText({
+      oldText: 'some text @Yellowish Restaurant other',
+      changedText: 'some new casual text @Yellowish Restaurant other',
+      mentioned,
+      cursorPosition: {
+        start: 'some '.length,
+        end: 'some new casual '.length,
+      },
+      type: Typing.addedText,
+    });
+
+    const newlabelPosition = 'some new casual text '.length;
+    expect(JSON.stringify(newMentioned)).toBe(
+      `[{"uuid":"uuid1","id":"1","label":"@Yellowish Restaurant","position":${newlabelPosition},"type":"user"}]`
+    );
+    expect(newText).toBe('some new casual text @Yellowish Restaurant other');
+  });
+
+  it('mentions: replace a lot of text before mention case 2', () => {
+    const mentioned = [
+      {
+        uuid: 'uuid1',
+        id: '1',
+        label: '@Giacomo',
+        position: 'some text '.length,
+        type: 'user',
+      },
+    ];
+    const { newText, newMentioned } = onChangeMentionableText({
+      oldText: 'some text @Giacomo',
+      changedText: 'some new casual text @Giacomo',
+      mentioned,
+      cursorPosition: {
+        start: ''.length,
+        end: 'some new casual text'.length,
+      },
+      type: Typing.addedText,
+    });
+
+    const newlabelPosition = 'some new casual text '.length;
+    expect(JSON.stringify(newMentioned)).toBe(
+      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition},"type":"user"}]`
+    );
+    expect(newText).toBe('some new casual text @Giacomo');
+  });
+
+  it('mentions: replace a little text before mention', () => {
+    const mentioned = [
+      {
+        uuid: 'uuid1',
+        id: '1',
+        label: '@Giacomo',
+        position: 'ciao '.length,
+        type: 'user',
+      },
+    ];
+    const { newText, newMentioned } = onChangeMentionableText({
+      oldText: 'ciao @Giacomo',
+      changedText: 'new text @Giacomo',
+      mentioned,
+      cursorPosition: {
+        start: ''.length,
+        end: 'new text'.length,
+      },
+      type: Typing.addedText,
+    });
+
+    const newlabelPosition = 'new text '.length;
+    expect(JSON.stringify(newMentioned)).toBe(
+      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition},"type":"user"}]`
+    );
+    expect(newText).toBe('new text @Giacomo');
+  });
+
   it('mentions: added text before mention', () => {
     const mentioned = [
       {
@@ -815,7 +899,7 @@ describe('Mentions', () => {
     const newlabelPosition1 = 'ciao '.length;
     const newlabelPosition2 = 'ciao @Giacomo e '.length;
     expect(JSON.stringify(newMentioned)).toBe(
-      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition1},\"type\":\"user\"},{"uuid":"uuid2","id":"1","label":"@Giacomo","position":${newlabelPosition2},\"type\":\"user\"}]`
+      `[{"uuid":"uuid1","id":"1","label":"@Giacomo","position":${newlabelPosition1},"type":"user"},{"uuid":"uuid2","id":"1","label":"@Giacomo","position":${newlabelPosition2},"type":"user"}]`
     );
     expect(newText).toBe('ciao @Giacomo e @Giacomo');
   });

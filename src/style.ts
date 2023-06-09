@@ -1,10 +1,13 @@
 import { StyleSheet } from 'react-native';
 
-const iconHeight = 25;
 const maxHeightInputText = 150;
 const minHeightInputTextContainer = 25;
 
 export default StyleSheet.create({
+  textInput: {
+    flex: 1,
+  },
+
   textInInputText: {
     color: '#000',
     fontWeight: '500',

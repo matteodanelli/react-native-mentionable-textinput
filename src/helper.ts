@@ -34,46 +34,100 @@ const updateMentionedPositions = (
 const mentionToDelete = (
   mention: Mention,
   cursorPosition: CursorPosition,
-  mentionUpdatedWithNewCursor: Mention
+  mentionUpdatedWithNewCursor: Mention,
+  currentText: string,
+  charsLenghtChanged: number,
+  isRemovedSomeMention: boolean
 ) => {
   const cursorStart = cursorPosition.start;
   const cursorEnd = cursorPosition.end;
   const mentionStart = mention.position;
   const mentionEnd = mention.position + mention.label.length;
+  const snapshotMentionWillBeStart = mentionUpdatedWithNewCursor.position;
+  const snapshotMentionWillBeEnd =
+    mentionUpdatedWithNewCursor.position +
+    mentionUpdatedWithNewCursor.label.length;
+  const cursorDifference = cursorEnd - cursorStart;
 
   if (cursorStart >= mentionStart && cursorStart < mentionEnd) {
-    // CASE 1a: mention and text after included
-    //   |        |
-    // @mention hello
-    // CASE 1b: mention included
-    //   |  |
-    // @mention hello
-    // CASE 1c: text inserted at the start of the mention
-    // ||
-    // @mention hello
-    // ciao @mention hello
-    const updatedMentionStart = mentionUpdatedWithNewCursor.position;
-    // make sure the above check is reliable
-    if (cursorStart > cursorEnd && cursorEnd < mentionStart) {
-      return false;
-    } else if (cursorStart >= updatedMentionStart) {
+    if (
+      cursorStart >= snapshotMentionWillBeStart &&
+      cursorStart < snapshotMentionWillBeEnd
+    ) {
       return true;
-    } else {
+    } else if (
+      currentText.slice(
+        mentionUpdatedWithNewCursor.position,
+        mentionUpdatedWithNewCursor.position +
+          mentionUpdatedWithNewCursor.label.length
+      ) === mention.label
+    ) {
+      // case when text replaced before mention
       return false;
+    } else {
+      // CASE 1a: mention and text after included
+      //   |        |
+      // @mention hello
+      // CASE 1b: mention included
+      //   |  |
+      // @mention hello
+      // CASE 1c: text inserted at the start of the mention
+      // ||
+      // @mention hello
+      // ciao @mention hello
+      return true;
     }
   } else if (cursorEnd > mentionStart && cursorEnd <= mentionEnd) {
-    // CASE 2a: mention and text before included
-    //   |      |
-    // hello @mention
-    // CASE 2b: mention and text before included
-    //        |  |
-    // hello @mention
-    return true;
+    if (
+      cursorEnd > snapshotMentionWillBeStart &&
+      cursorEnd <= snapshotMentionWillBeEnd
+    ) {
+      return true;
+    } else if (
+      !isRemovedSomeMention &&
+      currentText.slice(
+        snapshotMentionWillBeStart,
+        snapshotMentionWillBeEnd
+      ) === mention.label
+    ) {
+      // case when text replaced before mention ex:
+      // old: hello @mention
+      // new: other text @mention
+      return false;
+    } else {
+      // CASE 2a: mention and text before included
+      //   |      |
+      // hello @mention
+      // CASE 2b: mention and text before included
+      //        |  |
+      // hello @mention
+      return true;
+    }
   } else if (cursorStart <= mentionStart && cursorEnd >= mentionEnd) {
-    // CASE 3: mention and text before and after included
-    //   |              |
-    // hello @mention hello
-    return true;
+    if (
+      cursorStart <= snapshotMentionWillBeStart &&
+      cursorEnd >= snapshotMentionWillBeEnd
+    ) {
+      return true;
+    }
+    if (
+      charsLenghtChanged !== cursorDifference &&
+      currentText.slice(
+        mentionUpdatedWithNewCursor.position,
+        mentionUpdatedWithNewCursor.position +
+          mentionUpdatedWithNewCursor.label.length
+      ) === mention.label
+    ) {
+      // case when text replaced before mention ex:
+      // old: hello @mention
+      // new: other text before @mention
+      return false;
+    } else {
+      // CASE 3: mention and text before and after included
+      //   |              |
+      // hello @mention hello
+      return true;
+    }
   } else {
     return false;
   }
@@ -128,22 +182,37 @@ const onChangeMentionableText = ({
   type: Typing;
 }) => {
   // For every mention, check if it has been edited. If yes then update the text (removing or disabling it)
-  const charsWritedPreEdited = cursorPosition.end - cursorPosition.start;
+  let charsLenghtChanged = 0;
+  if (type === Typing.addedText) {
+    charsLenghtChanged = changedText.length - oldText.length;
+  } else {
+    charsLenghtChanged = oldText.length - changedText.length;
+  }
   const updatedMentionsCursors = updateMentionedPositions(
     mentioned,
     cursorPosition,
     type,
-    charsWritedPreEdited
+    charsLenghtChanged
   );
 
   // get all mentions to delete and to keep, to save one cycle after
   const mentionOrganizer = mentioned.reduce(
     (acc: MentionOrganizer, mention, index): MentionOrganizer => {
       const snapshotNewMention = updatedMentionsCursors[index];
-      if (mentionToDelete(mention, cursorPosition, snapshotNewMention)) {
+      if (
+        mentionToDelete(
+          mention,
+          cursorPosition,
+          snapshotNewMention,
+          changedText,
+          charsLenghtChanged,
+          acc.isRemovedSomeMention
+        )
+      ) {
         return {
           ...acc,
           mentionsToDelete: [...acc.mentionsToDelete, mention],
+          isRemovedSomeMention: true,
         };
       } else {
         return {
@@ -152,7 +221,7 @@ const onChangeMentionableText = ({
         };
       }
     },
-    { mentionsToDelete: [], mentionsToKeep: [] }
+    { mentionsToDelete: [], mentionsToKeep: [], isRemovedSomeMention: false }
   );
 
   const firstMentionEdited = mentionOrganizer.mentionsToDelete[0];
@@ -182,14 +251,13 @@ const onChangeMentionableText = ({
       ),
     };
   } else {
-    const charsWrited = cursorPosition.end - cursorPosition.start;
     return {
       newText: changedText,
       newMentioned: updateMentionedPositions(
         mentionOrganizer.mentionsToKeep,
         cursorPosition,
         type,
-        charsWrited
+        charsLenghtChanged
       ),
     };
   }
@@ -347,13 +415,49 @@ const shiftSearchCursorIfNeeded = (
   oldText: string,
   newText: string,
   typing: Typing
-): SearchCursorPosition => {
+): SearchCursorPosition | undefined => {
+  const cursorDifference = newText.length - oldText.length;
+
+  const textSearchMention = oldText.slice(
+    searchMention.start - 1,
+    searchMention.end
+  );
+
   if (typing === Typing.addedText) {
-    const cursorDifference = cursor.end - cursor.start;
-    const stringDifference = newText.length - oldText.length;
-    if (cursorDifference !== stringDifference) {
-    } else if (cursor.start < searchMention.start) {
-      return {
+    const searchMentionShifted = {
+      ...searchMention,
+      start: searchMention.start + cursorDifference,
+      end: searchMention.end + cursorDifference,
+      pauseAt: searchMention.pauseAt
+        ? searchMention.pauseAt + cursorDifference
+        : undefined,
+    };
+
+    let searchMentionToCheck = searchMention;
+
+    if (
+      newText.slice(
+        searchMentionShifted.start - 1,
+        searchMentionShifted.end
+      ) === textSearchMention
+    ) {
+      searchMentionToCheck = searchMentionShifted;
+    } else if (cursor.start <= searchMention.start) {
+      searchMentionToCheck = searchMentionShifted;
+    }
+
+    if (
+      isCursorIsBetweenMentionCharSearchMention(cursor, searchMentionToCheck)
+    ) {
+      return undefined;
+    } else {
+      return searchMentionToCheck;
+    }
+  } else {
+    if (isCursorIsBetweenMentionCharSearchMention(cursor, searchMention)) {
+      return undefined;
+    } else {
+      const searchMentionShifted = {
         ...searchMention,
         start: searchMention.start + cursorDifference,
         end: searchMention.end + cursorDifference,
@@ -361,25 +465,13 @@ const shiftSearchCursorIfNeeded = (
           ? searchMention.pauseAt + cursorDifference
           : undefined,
       };
-    }
 
-    return searchMention;
-  } else {
-    const cursorDifference = cursor.end - cursor.start;
-    const stringDifference = oldText.length - newText.length;
-    if (cursorDifference !== stringDifference) {
-    } else if (cursor.start < searchMention.start) {
-      return {
-        ...searchMention,
-        start: searchMention.start - cursorDifference,
-        end: searchMention.end - cursorDifference,
-        pauseAt: searchMention.pauseAt
-          ? searchMention.pauseAt - cursorDifference
-          : undefined,
-      };
+      if (cursor.start <= searchMention.start) {
+        return searchMentionShifted;
+      } else {
+        return searchMention;
+      }
     }
-
-    return searchMention;
   }
 };
 
@@ -389,7 +481,7 @@ const isCursorIsBetweenMentionCharSearchMention = (
 ) => {
   // @ # /
   return (
-    cursor.start <= searchMention.start && cursor.end >= searchMention.start
+    cursor.start <= searchMention.start && cursor.end > searchMention.start
   );
 };
 
