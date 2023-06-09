@@ -109,6 +109,7 @@ const App = () => {
         submitIcon={<Image style={styles.iconStyle} source={{ uri: send }} />}
         mentionIcon={<Image style={styles.iconStyle} source={{ uri: email }} />}
         closeIcon={<Image style={styles.iconStyle} source={{ uri: close }} />}
+        // @ts-ignore
         textInputProps={textInputProps}
         maxHeightMentionWindow={200}
         isSmartSearchEnabled={true}
