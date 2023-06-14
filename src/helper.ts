@@ -6,8 +6,8 @@ import {
   Typing,
 } from './types';
 
-const updateMentionedPositions = (
-  mentioned: Mention[],
+const updateMentionedPositions = <T>(
+  mentioned: Mention<T>[],
   cursorPosition: CursorPosition,
   type: Typing,
   length: number
@@ -31,10 +31,10 @@ const updateMentionedPositions = (
   });
 };
 
-const mentionToDelete = (
-  mention: Mention,
+const mentionToDelete = <T>(
+  mention: Mention<T>,
   cursorPosition: CursorPosition,
-  mentionUpdatedWithNewCursor: Mention,
+  mentionUpdatedWithNewCursor: Mention<T>,
   currentText: string,
   charsLenghtChanged: number,
   isRemovedSomeMention: boolean
@@ -133,9 +133,9 @@ const mentionToDelete = (
   }
 };
 
-const stretchCursorPointer = (
-  firstMentionEdited: Mention,
-  lastMentionEdited: Mention,
+const stretchCursorPointer = <T>(
+  firstMentionEdited: Mention<T>,
+  lastMentionEdited: Mention<T>,
   cursorPosition: CursorPosition
 ) => {
   //    |      |
@@ -168,7 +168,7 @@ const stretchCursorPointer = (
   return cursorPositionStretched;
 };
 
-const onChangeMentionableText = ({
+const onChangeMentionableText = <T>({
   oldText,
   changedText,
   cursorPosition,
@@ -178,7 +178,7 @@ const onChangeMentionableText = ({
   oldText: string;
   changedText: string;
   cursorPosition: CursorPosition;
-  mentioned: Mention[];
+  mentioned: Mention<T>[];
   type: Typing;
 }) => {
   // For every mention, check if it has been edited. If yes then update the text (removing or disabling it)
@@ -197,7 +197,7 @@ const onChangeMentionableText = ({
 
   // get all mentions to delete and to keep, to save one cycle after
   const mentionOrganizer = mentioned.reduce(
-    (acc: MentionOrganizer, mention, index): MentionOrganizer => {
+    (acc: MentionOrganizer<T>, mention, index): MentionOrganizer<T> => {
       const snapshotNewMention = updatedMentionsCursors[index];
       if (
         mentionToDelete(
@@ -263,15 +263,15 @@ const onChangeMentionableText = ({
   }
 };
 
-const addMentionIntoText = ({
+const addMentionIntoText = <T>({
   text,
   mention,
   mentioned,
   currentCursorPosition,
 }: {
   text: string;
-  mention: Mention;
-  mentioned: Mention[];
+  mention: Mention<T>;
+  mentioned: Mention<T>[];
   currentCursorPosition: CursorPosition;
 }) => {
   let mentionedClone = [...mentioned];
@@ -386,9 +386,9 @@ const getCursorPointer = (oldText: string, newText: string) => {
   }
 };
 
-const isCursorIsBetweenSearchMention = (
+const isCursorIsBetweenSearchMention = <T>(
   cursor: CursorPosition,
-  searchMention: SearchCursorPosition
+  searchMention: SearchCursorPosition<T>
 ) => {
   if (
     (cursor.start > searchMention.start && cursor.start <= searchMention.end) ||
@@ -409,13 +409,13 @@ const isCursorIsBetweenSearchMention = (
   }
 };
 
-const shiftSearchCursorIfNeeded = (
+const shiftSearchCursorIfNeeded = <T>(
   cursor: CursorPosition,
-  searchMention: SearchCursorPosition,
+  searchMention: SearchCursorPosition<T>,
   oldText: string,
   newText: string,
   typing: Typing
-): SearchCursorPosition | undefined => {
+): SearchCursorPosition<T> | undefined => {
   const cursorDifference = newText.length - oldText.length;
 
   const textSearchMention = oldText.slice(

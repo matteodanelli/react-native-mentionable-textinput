@@ -206,7 +206,7 @@ describe('Mentions', () => {
   });
 
   it('mentions: without mention', () => {
-    const mentioned: Mention[] = [];
+    const mentioned: Mention<string>[] = [];
     const { newText, newMentioned } = onChangeMentionableText({
       oldText: 'ciao ',
       changedText: 'ciao c',

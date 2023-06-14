@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  TextInputProps,
 } from 'react-native';
 import faker from './faker';
 import { type MentionListItem, TextInputMention } from '../../src/index';
@@ -54,14 +53,10 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
-  // Styles
-  const textInputProps: TextInputProps = {
-    multiline: true,
-    textContentType: 'password',
-    style: styles.textInputStyle,
-  };
   // States
-  const [itemsFound, setItemsFound] = useState<Array<MentionListItem>>([]);
+  const [itemsFound, setItemsFound] = useState<Array<MentionListItem<string>>>(
+    []
+  );
 
   // Handlers
   const searchItems = (mentionsType: string, searchText: string) => {
@@ -109,8 +104,11 @@ const App = () => {
         submitIcon={<Image style={styles.iconStyle} source={{ uri: send }} />}
         mentionIcon={<Image style={styles.iconStyle} source={{ uri: email }} />}
         closeIcon={<Image style={styles.iconStyle} source={{ uri: close }} />}
-        // @ts-ignore
-        textInputProps={textInputProps}
+        textInputProps={{
+          multiline: true,
+          textContentType: 'password',
+          style: styles.textInputStyle,
+        }}
         maxHeightMentionWindow={200}
         isSmartSearchEnabled={true}
       />
