@@ -23,21 +23,21 @@ commands:
   #           echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
 
   yarn-dependencies:
-    description: "Get JavaScript dependencies"
+    description: 'Get JavaScript dependencies'
     steps:
       - run:
           name: Executing node version check
           command: node -v
       - restore_cache:
           name: Restore yarn lib cache
-          key: v1-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
       - run:
           working_directory: .
           name: Installing lib dependencies
           command: yarn install
       - save_cache:
           name: Save yarn lib cache
-          key: v1-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
           paths:
             - ././node_modules
       - run:
@@ -46,30 +46,30 @@ commands:
           command: yarn test
       - restore_cache:
           name: Restore yarn app-example cache
-          key: v1-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
       - run:
           working_directory: ./example
           name: Installing app-example dependencies
           command: yarn install
       - save_cache:
           name: Save yarn app-example cache
-          key: v1-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
           paths:
             - ././node_modules
 
   pods-dependencies:
-    description: "Get cocoapods dependencies"
+    description: 'Get cocoapods dependencies'
     steps:
       - restore_cache:
           name: Restore cocoapods specs and pods
-          key: v1-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
       - run:
           name: Getting cocoapods dependencies
           working_directory: ./example/ios
           command: pod install --deployment
       - save_cache:
           name: Save cocoapods specs and pods cache
-          key: v1-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
           paths:
             - ./example/ios/Pods
             - ~/.cocoapods
@@ -121,7 +121,6 @@ commands:
   #         paths:
   #           - /Users/distiller/android-tools
 
-
   # react-native-dependencies:
   #   description: "Install RN dependencies"
   #   steps:
@@ -130,12 +129,11 @@ commands:
   #         command: |
   #           HOMEBREW_NO_AUTO_UPDATE=1 brew install watchman
 
-
   simulator-dependencies:
-    description: "Install iOS simulator dependencies"
+    description: 'Install iOS simulator dependencies'
     steps:
       - run:
-          name: "Install applesimutils"
+          name: 'Install applesimutils'
           command: |
             HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew
             HOMEBREW_NO_AUTO_UPDATE=1 brew install applesimutils
@@ -157,7 +155,7 @@ commands:
   #         command: adb wait-for-device shell 'while [[ -z $(getprop dev.bootcomplete) ]]; do sleep 1; done;'
 
   clear-detox-cache:
-    description: "Clears detox framework cache"
+    description: 'Clears detox framework cache'
     steps:
       - run:
           working_directory: ./example
@@ -165,7 +163,6 @@ commands:
           command: |
             npx detox clean-framework-cache
             npx detox build-framework-cache
-
 
 jobs:
   ios-test:
@@ -197,7 +194,6 @@ jobs:
       # - store_artifacts:
       #     path: ././reports
       #     destination: ./reports
-
 
 workflows:
   run_detox_tests:

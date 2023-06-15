@@ -51,7 +51,7 @@ const MentionView = <T,>(props: Props<T>) => {
           }}
         >
           {renderMentionItem ? (
-            renderMentionItem
+            renderMentionItem(item)
           ) : (
             <Text
               testID={`mention-item-${index}-text`}
@@ -87,7 +87,7 @@ const MentionView = <T,>(props: Props<T>) => {
                 renderMentionType(mentionType.type)
               ) : (
                 <Text style={styles.mentionTypeListItemText}>
-                  {mentionType.type}
+                  {`${mentionType.type}`}
                 </Text>
               )}
             </Pressable>

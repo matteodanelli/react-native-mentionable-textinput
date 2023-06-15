@@ -66,7 +66,7 @@ export type UseMentionProps<T> = {
   isMentionsDisabled?: boolean;
   isSmartSearchEnabled?: boolean;
   mentionableItems: Array<MentionListItem<T>>; // reuslts of search
-  searchMentionableItems: (mentionType: T, searchText: string) => void;
+  searchMentionableItems?: (mentionType: T, searchText: string) => void;
   onChangeText?: (text: string, mentioned: Array<Mention<T>>) => void;
   onMentionClose?: () => void;
   onSend?: (text: string, mentioned: Array<Mention<T>>) => void;
