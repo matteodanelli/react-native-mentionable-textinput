@@ -12,19 +12,16 @@ import {
   Typing,
 } from '../types';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { Props } from '../types';
-import { Text, TextInput } from 'react-native';
+import { UseMentionProps } from '../types';
+import { Text } from 'react-native';
 import styles from '../style';
 import useMultiSearchMention from './useMultiSearchMention';
 
-const useMention = (props: Props) => {
+const useMention = <T,>(props: UseMentionProps<T>) => {
   const {
     initialText,
     initialMentioned,
     searchMentionableItems,
-    placeholder,
-    onEndTyping,
-    children,
     isMentionsDisabled,
     onSend,
     mentionableItems,
@@ -33,20 +30,7 @@ const useMention = (props: Props) => {
     mentionStyle,
     textStyle,
     mentionsTypes = [],
-    isSubmitDisabled,
-    submitIcon,
-    mentionIcon,
-    closeIcon,
-    keyboardAvoidingViewProps,
-    maxHeightMentionWindow,
-    setInputRef,
-    textInputProps,
-    mentionContainerStyle,
-    textInputContainerStyle,
-    renderMentionType,
-    separatorColor = 'grey',
     isSmartSearchEnabled,
-    testID,
   } = props;
 
   const renderMention = useCallback(
@@ -70,13 +54,6 @@ const useMention = (props: Props) => {
     [textStyle]
   );
 
-  const setInputTextRefCallback = useCallback(
-    (ref: TextInput) => {
-      setInputRef?.(ref);
-    },
-    [setInputRef]
-  );
-
   const [inputText, setInputText] = useState(initialText || '');
   const [mentioned, setMentioned] = useState(initialMentioned || []);
   const [showMentionTypes, setShowMentionTypes] = useState(false);
@@ -86,7 +63,7 @@ const useMention = (props: Props) => {
     end: 0,
   });
 
-  const closeMention = useCallback(() => {
+  const hideMentionTyping = useCallback(() => {
     setShowMentionItems(false);
     setShowMentionTypes(false);
   }, []);
@@ -101,12 +78,19 @@ const useMention = (props: Props) => {
     getSearchMentionFromCursor,
     removeSearchMentionPosition,
     removeAllSearchMentionPosition,
-  } = useMultiSearchMention({
-    closeMention,
+  } = useMultiSearchMention<T>({
+    hideMentionTyping,
   });
 
+  const closeMention = useCallback(() => {
+    hideMentionTyping();
+    if (!isSmartSearchEnabled) {
+      removeAllSearchMentionPosition();
+    }
+  }, [hideMentionTyping, isSmartSearchEnabled, removeAllSearchMentionPosition]);
+
   const onSearchMention = useCallback(
-    (currentMention: SearchCursorPosition, fullText: string) => {
+    (currentMention: SearchCursorPosition<T>, fullText: string) => {
       setShowMentionItems(true);
       setShowMentionTypes(false);
 
@@ -156,7 +140,7 @@ const useMention = (props: Props) => {
   }, [searchMentionHovering, closeMention]);
 
   const getObjectMentionFromType = useCallback(
-    (type: string) => mentionsTypes.find((mT) => mT.type === type),
+    (type: T) => mentionsTypes.find((mT) => mT.type === type),
     [mentionsTypes]
   );
   const getObjectMentionFromChar = useCallback(
@@ -165,7 +149,7 @@ const useMention = (props: Props) => {
   );
 
   const onPressMentionType = useCallback(
-    (mentionType: string, localCursorPosition?: CursorPosition) => {
+    (mentionType: T, localCursorPosition?: CursorPosition) => {
       setShowMentionTypes(false);
       setShowMentionItems(true);
 
@@ -231,10 +215,7 @@ const useMention = (props: Props) => {
         );
 
         if (searchMentionEdited) {
-          // during search
-          if (searchMentionEdited) {
-            onSearchMention(searchMentionEdited, changedText);
-          }
+          onSearchMention(searchMentionEdited, changedText);
         }
 
         const penultimateChar = changedText.charAt(
@@ -255,6 +236,7 @@ const useMention = (props: Props) => {
         if (penultimateCharIsEmpty && afterLastTypedCharIsEmpty) {
           const lastTypedChar = changedText.charAt(localCursorPosition.start);
           const mentionTypeRef = getObjectMentionFromChar(lastTypedChar);
+
           if (mentionTypeRef) {
             onPressMentionType(mentionTypeRef.type, localCursorPosition);
           }
@@ -290,12 +272,14 @@ const useMention = (props: Props) => {
 
   const onSelectionChange = useCallback(
     (event: { nativeEvent: { selection: CursorPosition } }) => {
-      if (!isMentionsDisabled) {
-        // Save the current position of the cursor
-        const { selection } = event.nativeEvent;
-
-        setCursorPosition(selection);
+      if (isMentionsDisabled) {
+        return;
       }
+
+      // Save the current position of the cursor
+      const { selection } = event.nativeEvent;
+
+      setCursorPosition(selection);
     },
     [isMentionsDisabled]
   );
@@ -308,9 +292,6 @@ const useMention = (props: Props) => {
     } else if (!searchMentionActived && searchMentionHovering) {
       setSearchMentionHoverUUID(undefined);
       closeMention();
-      if (!isSmartSearchEnabled) {
-        removeAllSearchMentionPosition();
-      }
     }
   }, [
     closeMention,
@@ -323,10 +304,10 @@ const useMention = (props: Props) => {
   ]);
 
   const addMention = useCallback(
-    (mention: MentionListItem) => {
+    (mention: MentionListItem<T>) => {
       if (searchMentionHovering) {
         const mentionType = getObjectMentionFromType(mention.type);
-        const newMention: Mention = {
+        const newMention: Mention<T> = {
           uuid: generateUUID(),
           id: mention.id,
           type: mention.type,
@@ -343,7 +324,9 @@ const useMention = (props: Props) => {
 
         // Mention added therefore reset cursor position of the search input
         setMentioned(newMentioned);
+
         setInputText(newText);
+
         onChangeTextCallback?.(newText, newMentioned);
         removeSearchMentionPosition(searchMentionHovering.uuid);
       }
@@ -418,15 +401,12 @@ const useMention = (props: Props) => {
     mentioned,
     formattedText,
     onChangeText,
-    placeholder,
     onSelectionChange,
     cursorPosition,
-    onEndTyping,
     addMention,
     chosenMentionType: searchMentionHovering?.type,
     showMentionItems,
     showMentionTypes,
-    children,
     isMentionsDisabled,
     onSendCallback,
     onPressMentionIcon,
@@ -435,22 +415,11 @@ const useMention = (props: Props) => {
     closeMention,
     mentionItemsVisible,
     isTextUpdated,
-    submitIcon,
-    mentionIcon,
-    closeIcon,
     mentionsTypes,
-    keyboardAvoidingViewProps,
-    maxHeightMentionWindow,
-    sendDisabled: !isTextUpdated || isSubmitDisabled,
-    setInputTextRefCallback,
-    textInputProps,
-    mentionContainerStyle,
-    textInputContainerStyle,
-    renderMentionType,
-    separatorColor,
     isSmartSearchEnabled,
-    testID,
     searchMentionPositions,
+    inputText,
+    setInputText,
   };
 };
 

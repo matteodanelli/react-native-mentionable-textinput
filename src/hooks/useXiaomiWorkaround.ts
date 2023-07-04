@@ -9,6 +9,7 @@ const useXiaomiWorkaround = () => {
       ['redmi', 'xiaomi', 'poco', 'pocophone'].includes(
         DeviceInfo.getBrand().toLowerCase()
       ) &&
+      Platform.OS === 'android' &&
       Platform.Version > 28
     );
   }, []);

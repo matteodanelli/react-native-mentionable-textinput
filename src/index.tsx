@@ -1,3 +1,6 @@
 import TextInputMention from './TextInputMention';
 import { MentionListItem } from './types';
-export { MentionListItem, TextInputMention };
+import useMention from './hooks/useMention';
+
+export type { MentionListItem };
+export { TextInputMention, useMention };

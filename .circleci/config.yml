@@ -1,43 +1,19 @@
 version: 2.1
 
 commands:
-  # node-version:
-  #   description: "Install node version 16"
-  #   steps:
-  #     - run:
-  #         name: 'Install Project Node'
-  #         command: |
-  #           set +x
-  #           source ~/.bashrc
-
-  #           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  #           export NVM_DIR="$HOME/.nvm"
-  #           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  #           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-  #           nvm install 16
-  #           NODE_DIR=$(dirname $(which node))
-  #           echo "export PATH=$NODE_DIR:\$PATH" >> $BASH_ENV
-
-  #           curl -o- -L https://yarnpkg.com/install.sh | bash
-  #           echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
-
   yarn-dependencies:
-    description: "Get JavaScript dependencies"
+    description: 'Get JavaScript dependencies'
     steps:
-      - run:
-          name: Executing node version check
-          command: node -v
       - restore_cache:
-          name: Restore yarn lib cache
-          key: v1-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
+          name: Restore yarn cache
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
       - run:
           working_directory: .
           name: Installing lib dependencies
           command: yarn install
       - save_cache:
-          name: Save yarn lib cache
-          key: v1-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
+          name: Cache
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-lib-{{ checksum "./yarn.lock" }}-{{ arch }}
           paths:
             - ././node_modules
       - run:
@@ -46,158 +22,59 @@ commands:
           command: yarn test
       - restore_cache:
           name: Restore yarn app-example cache
-          key: v1-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
       - run:
           working_directory: ./example
           name: Installing app-example dependencies
           command: yarn install
       - save_cache:
           name: Save yarn app-example cache
-          key: v1-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
+          key: key-{{ .Environment.CACHE_VERSION }}-yarn-app-{{ checksum "./example/yarn.lock" }}-{{ arch }}
           paths:
             - ././node_modules
-
   pods-dependencies:
-    description: "Get cocoapods dependencies"
+    description: 'Get cocoapods dependencies'
     steps:
       - restore_cache:
-          name: Restore cocoapods specs and pods
-          key: v1-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
+          name: Restore cache pods
+          key: key-{{ .Environment.CACHE_VERSION }}-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
       - run:
-          name: Getting cocoapods dependencies
+          name: Install pods
           working_directory: ./example/ios
-          command: pod install --deployment
+          command: pod install
       - save_cache:
-          name: Save cocoapods specs and pods cache
-          key: v1-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
+          name: Cache pods
+          key: key-{{ .Environment.CACHE_VERSION }}-cocoapods-{{ checksum "./example/ios/Podfile.lock" }}-{{ arch }}
           paths:
             - ./example/ios/Pods
             - ~/.cocoapods
-
-  # gradle-dependencies:
-  #   description: "Get Gradle dependencies"
-  #   steps:
-  #     - run:
-  #         working_directory: ./android
-  #         name: Chmod permissions
-  #         command: sudo chmod +x ./gradlew
-  #     - restore_cache:
-  #         name: Restore Gradle cache
-  #         key: v1-gradle-{{ checksum "./android/build.gradle" }}-{{ checksum  "./android/app/build.gradle" }}-{{ arch }}
-  #     - run:
-  #         working_directory: ./android
-  #         name: Download Gradle dependencies
-  #         command: ./gradlew dependencies
-  #     - save_cache:
-  #         name: Save Gradle cache
-  #         paths:
-  #           - ~/.gradle
-  #         key: v1-gradle-{{ checksum "./android/build.gradle" }}-{{ checksum  "./android/app/build.gradle" }}-{{ arch }}
-
-  # android-sdk-dependencies:
-  #   description: "Install and set android SDK"
-  #   steps:
-  #     - run:
-  #         name: set ANDROID_SDK_ROOT
-  #         command: |
-  #           echo 'export ANDROID_SDK_ROOT=$HOME/android-tools'  >> $BASH_ENV
-
-  #     - restore_cache:
-  #         key: android=tools-v1-{{ checksum "scripts/install-android-tools.sh" }}-{{ arch }}
-
-  #     - run:
-  #         name: install android tools
-  #         command: |
-  #           sh scripts/install-android-tools.sh
-  #           echo 'export PATH=$ANDROID_SDK_ROOT/tools/bin:$PATH'  >> $BASH_ENV
-  #           echo 'export PATH=$ANDROID_SDK_ROOT/tools:$PATH'  >> $BASH_ENV
-  #           echo 'export PATH=$ANDROID_SDK_ROOT/platform-tools:$PATH'  >> $BASH_ENV
-  #           echo 'export PATH=$ANDROID_SDK_ROOT/emulator:$PATH'  >> $BASH_ENV
-  #           source $BASH_ENV
-  #           sdkmanager --list
-
-  #     - save_cache:
-  #         key: android=tools-v1-{{ checksum "scripts/install-android-tools.sh" }}-{{ arch }}
-  #         paths:
-  #           - /Users/distiller/android-tools
-
-
-  # react-native-dependencies:
-  #   description: "Install RN dependencies"
-  #   steps:
-  #     - run:
-  #         name: "Install watchman"
-  #         command: |
-  #           HOMEBREW_NO_AUTO_UPDATE=1 brew install watchman
-
-
-  simulator-dependencies:
-    description: "Install iOS simulator dependencies"
-    steps:
-      - run:
-          name: "Install applesimutils"
-          command: |
-            HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install applesimutils
-
-  # create-launch-android-emulator:
-  #   description: "create and launch android emulators"
-  #   steps:
-  #     - run:
-  #         name: create AVD
-  #         command: echo "no" | avdmanager --verbose create avd --force --name "Pixel_3a_API_29" --package "system-images;android-29;google_apis;x86_64"
-
-  #     - run:
-  #         name: start AVD
-  #         command: emulator @Pixel_3a_API_29 -no-window -no-audio
-  #         background: true
-
-  #     - run:
-  #         name: wait for emulator
-  #         command: adb wait-for-device shell 'while [[ -z $(getprop dev.bootcomplete) ]]; do sleep 1; done;'
-
-  clear-detox-cache:
-    description: "Clears detox framework cache"
-    steps:
-      - run:
-          working_directory: ./example
-          name: Clear detox cache
-          command: |
-            npx detox clean-framework-cache
-            npx detox build-framework-cache
 
 
 jobs:
   ios-test:
     macos:
-      xcode: 13.3.0
+      xcode: 14.3.1
     steps:
       - attach_workspace:
           at: .
       - checkout
       - yarn-dependencies
       - pods-dependencies
-      - simulator-dependencies
-      - clear-detox-cache
-
       - run:
+          name: 'Install applesimutils'
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew && HOMEBREW_NO_AUTO_UPDATE=1  brew install applesimutils; applesimutils --list
+      - run:
+          name: Clear detox cache
           working_directory: ./example
+          command: npx detox clean-framework-cache && npx detox build-framework-cache
+      - run:
           name: Run iOS detox build
-          command: npx detox build -c ios.sim.debug
-
-      - run:
           working_directory: ./example
+          command: npx detox build -c ios.sim.debug
+      - run:
           name: Run iOS detox test
-          command: npx detox test -c ios.sim.debug --record-logs all > test-summary.txt
-
-      # - store_artifacts:
-      #     path: ././artifacts
-      #     destination: ./jest-logs
-
-      # - store_artifacts:
-      #     path: ././reports
-      #     destination: ./reports
-
+          working_directory: ./example
+          command: npx detox test -c ios.sim.debug
 
 workflows:
   run_detox_tests:

@@ -5,12 +5,12 @@
       "binaryPath": "./ios/build/Build/Products/Debug-iphonesimulator/MentionableTextinputExample.app",
       "build": "xcodebuild -workspace ios/MentionableTextinputExample.xcworkspace -scheme MentionableTextinputExample -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
       "type": "ios.simulator",
-      "name": "iPhone 13"
+      "name": "iPhone 14"
     },
     "android.emu.debug": {
       "type": "android.emulator",
       "binaryPath": "./android/app/build/outputs/apk/debug/app-debug.apk",
-      "build": "yarn jetifier && cd android && ./gradlew clean && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+      "build": "cd android && ./gradlew clean && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
       "device": {
         "avdName": "Pixel_API_30_AOSP"
       }

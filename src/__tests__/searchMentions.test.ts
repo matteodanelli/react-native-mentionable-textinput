@@ -3,7 +3,7 @@ import { SearchCursorPosition, Typing } from '../types';
 
 describe('Search Mentions', () => {
   it('search mentions: add end line befor search', () => {
-    const seachMention: SearchCursorPosition = {
+    const seachMention: SearchCursorPosition<string> = {
       start: 'Ciao\n'.length,
       end: 'Ciao\n@lan'.length,
       pauseAt: 'Ciao\n@lan'.length,
@@ -29,7 +29,7 @@ describe('Search Mentions', () => {
   });
 
   it('search mentions: removed end line befor search', () => {
-    const seachMention: SearchCursorPosition = {
+    const seachMention: SearchCursorPosition<string> = {
       start: 'Ciao\n\n'.length,
       end: 'Ciao\n\n@lan'.length,
       pauseAt: 'Ciao\n\n@lan'.length,
@@ -55,7 +55,7 @@ describe('Search Mentions', () => {
   });
 
   it('search mentions: removed search from key char', () => {
-    const seachMention: SearchCursorPosition = {
+    const seachMention: SearchCursorPosition<string> = {
       start: 'Ciao '.length,
       end: 'Ciao @lan'.length,
       pauseAt: 'Ciao @lan'.length,
@@ -79,7 +79,7 @@ describe('Search Mentions', () => {
   });
 
   it('search mentions: replaced some text before search', () => {
-    const seachMention: SearchCursorPosition = {
+    const seachMention: SearchCursorPosition<string> = {
       start: 'hello some text '.length,
       end: 'hello some text @lan'.length,
       pauseAt: undefined,
@@ -105,7 +105,7 @@ describe('Search Mentions', () => {
   });
 
   it('search mentions: removed end line far search', () => {
-    const seachMention: SearchCursorPosition = {
+    const seachMention: SearchCursorPosition<string> = {
       start: 'Ciao\nciao\nciao\n'.length,
       end: 'Ciao\nciao\nciao\n@lan'.length,
       pauseAt: 'Ciao\nciao\nciao\n@lan'.length,

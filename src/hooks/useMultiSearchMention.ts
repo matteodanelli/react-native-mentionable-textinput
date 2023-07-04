@@ -7,11 +7,11 @@ import {
 import { CursorPosition, SearchCursorPosition, Typing } from '../types';
 
 type Props = {
-  closeMention: any;
+  hideMentionTyping: () => void;
 };
 
-const useMultiSearchMention = (props: Props) => {
-  const { closeMention } = props;
+const useMultiSearchMention = <T>(props: Props) => {
+  const { hideMentionTyping } = props;
 
   // uuid of searchMention actived
   const [searchMentionHoverUUID, setSearchMentionHoverUUID] = useState<
@@ -20,7 +20,7 @@ const useMultiSearchMention = (props: Props) => {
 
   // all search position
   const [searchMentionPositions, refreshSearchMentionPositions] = useState<
-    SearchCursorPosition[]
+    SearchCursorPosition<T>[]
   >([]);
 
   // current search mention actived
@@ -64,7 +64,7 @@ const useMultiSearchMention = (props: Props) => {
     [searchMentionPositions]
   );
   const addSearchMentionPosition = useCallback(
-    (cursor: CursorPosition, type: string) => {
+    (cursor: CursorPosition, type: T) => {
       const uuid = generateUUID();
       refreshSearchMentionPositions([
         ...searchMentionPositions,
@@ -82,10 +82,10 @@ const useMultiSearchMention = (props: Props) => {
       oldText: string,
       newText: string,
       typing: Typing
-    ): SearchCursorPosition | undefined => {
-      let searchPositionFound: SearchCursorPosition | undefined;
+    ): SearchCursorPosition<T> | undefined => {
+      let searchPositionFound: SearchCursorPosition<T> | undefined;
       const newSearchMentionPositions = searchMentionPositions
-        .map((searchMentionPosition) => {
+        .map((searchMentionPosition: SearchCursorPosition<T>) => {
           const searchMentionPositionShifted = shiftSearchCursorIfNeeded(
             cursor,
             searchMentionPosition,
@@ -95,7 +95,7 @@ const useMultiSearchMention = (props: Props) => {
           );
           return searchMentionPositionShifted;
         })
-        .map((searchMentionPosition) => {
+        .map((searchMentionPosition: SearchCursorPosition<T> | undefined) => {
           if (searchMentionPosition) {
             if (isCursorIsBetweenSearchMention(cursor, searchMentionPosition)) {
               setSearchMentionHoverUUID(searchMentionPosition.uuid);
@@ -118,21 +118,21 @@ const useMultiSearchMention = (props: Props) => {
         .filter((searchMentionPosition) => {
           if (!searchMentionPosition) {
             // if user added or removed some text into mention char trigger
-            closeMention();
+            hideMentionTyping();
             return false;
           }
           return true;
         });
 
       refreshSearchMentionPositions(
-        newSearchMentionPositions as SearchCursorPosition[]
+        newSearchMentionPositions as SearchCursorPosition<T>[]
       );
 
       return searchPositionFound;
     },
     [
       searchMentionPositions,
-      closeMention,
+      hideMentionTyping,
       refreshSearchMentionPositions,
       setSearchMentionHoverUUID,
     ]

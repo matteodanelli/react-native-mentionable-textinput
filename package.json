@@ -1,6 +1,6 @@
 {
   "name": "react-native-mentionable-textinput",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "description": "ReactNative TextInput with enhanced capabilities for mentions",
   "main": "./src/index.tsx",
   "scripts": {
@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/matteodanelli/react-native-mentionable-textinput#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "cache": "~/.npm"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",

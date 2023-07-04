@@ -10,23 +10,23 @@ import {
 } from 'react-native';
 import styles from './style';
 
-type Props = {
-  mentionsTypes: Array<MentionItemType>;
+type Props<T> = {
+  mentionsTypes: Array<MentionItemType<T>>;
   showMentionTypes: boolean;
   showMentionItems: boolean;
   separatorColor: string;
-  addMention: (mention: MentionListItem) => void;
-  onPressMentionType: (mentionType: string) => void;
-  mentionableItems?: Array<MentionListItem>;
+  addMention: (mention: MentionListItem<T>) => void;
+  onPressMentionType: (mentionType: T) => void;
+  mentionableItems?: Array<MentionListItem<T>>;
   showHeader?: boolean;
-  chosenMentionType?: string;
-  renderMentionType?: (mentionType: string) => JSX.Element;
-  renderMentionItem?: (mention: MentionListItem) => JSX.Element;
-  maxHeightMentionWindow: number;
+  chosenMentionType?: T;
+  renderMentionType?: (mentionType: T) => JSX.Element;
+  renderMentionItem?: (mention: MentionListItem<T>) => JSX.Element;
+  maxHeightMentionWindow?: number;
   mentionContainerStyle?: StyleProp<ViewStyle>;
 };
 
-const MentionView = (props: Props) => {
+const MentionView = <T,>(props: Props<T>) => {
   const {
     showMentionTypes,
     showMentionItems,
@@ -42,7 +42,7 @@ const MentionView = (props: Props) => {
   } = props;
 
   const renderMentionItemInternal = useCallback(
-    ({ item, index }: { item: MentionListItem; index: number }) => {
+    ({ item, index }: { item: MentionListItem<T>; index: number }) => {
       return (
         <Pressable
           testID={`mention-item-${index}`}
@@ -51,7 +51,7 @@ const MentionView = (props: Props) => {
           }}
         >
           {renderMentionItem ? (
-            renderMentionItem
+            renderMentionItem(item)
           ) : (
             <Text
               testID={`mention-item-${index}-text`}
@@ -67,7 +67,7 @@ const MentionView = (props: Props) => {
   );
 
   const getMentionKey = useCallback(
-    (item: MentionListItem): string => `${item.id}-${item.label}`,
+    (item: MentionListItem<T>): string => `${item.id}-${item.label}`,
     []
   );
 
@@ -87,7 +87,7 @@ const MentionView = (props: Props) => {
                 renderMentionType(mentionType.type)
               ) : (
                 <Text style={styles.mentionTypeListItemText}>
-                  {mentionType.type}
+                  {`${mentionType.type}`}
                 </Text>
               )}
             </Pressable>
