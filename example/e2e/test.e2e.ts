@@ -11,7 +11,6 @@ const jestExpect = require('expect');
 // const waitToNavigate = (duration: number) => new Promise<void>(resolve => setTimeout(() => resolve(), duration));
 
 describe('Mentions Test', () => {
-  // TODO - only on every test
   beforeEach(async () => {
     await device.reloadReactNative();
   });
@@ -333,11 +332,12 @@ describe('Mentions Test', () => {
 
   it('mention: cut and paste a part of text before mention', async () => {
     let mentioned = [];
-    await initializeMention('some textreallylong');
+    await initializeMention('some textreallylong longandlongeragain');
 
     await element(by.id('mention-input-text')).tap({ x: 35, y: 5 });
     await element(by.id('mention-input-text')).multiTap(2);
     await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2); // Add additional tap in order to prevent spell checker
     await element(by.id('mention-input-text')).multiTap(2);
     await element(by.label('Paste')).atIndex(0).tap();
 
@@ -348,10 +348,6 @@ describe('Mentions Test', () => {
 
     jestExpect(mentioned.length).toBe(1);
   });
-
-  /**
-   * TO FIX
-   */
 
   it('search mention: delete end line near search mention', async () => {
     await element(by.id('mention-input-text')).typeText(
@@ -407,18 +403,17 @@ describe('Mentions Test', () => {
 
   it('search mention: cut and paste a part of text before search mention', async () => {
     let mentioned = [];
-    await element(by.id('mention-input-text')).typeText(
-      'hi alex, do you know '
-    );
+    await element(by.id('mention-input-text')).typeText('Hi Alex do you know ');
 
     await element(by.id('mention-button')).tap();
     await element(by.label('users')).tap();
 
     await typeMention();
 
-    await element(by.id('mention-input-text')).tap({ x: 50, y: 5 });
-    await element(by.id('mention-input-text')).multiTap(2);
+    await element(by.id('mention-input-text')).tap({ x: 50, y: 5 }); // Tap inside text input
+    await element(by.id('mention-input-text')).multiTap(2); // Double tap at the start of the line
     await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2); // Add additional tap in order to prevent spell checker
     await element(by.id('mention-input-text')).multiTap(2);
     await element(by.label('Paste')).atIndex(0).tap();
 
@@ -431,7 +426,7 @@ describe('Mentions Test', () => {
     );
 
     jestExpect(mentioned.length).toBe(1);
-    jestExpect(mentioned[0].start).toBe('hi do you know '.length);
+    jestExpect(mentioned[0].start).toBe('Hi\n do you know '.length); // For some reason Apple adds a new line, therefore add an additional spacing
   });
 
   it('search mention: cut and paste direct part before search mention', async () => {
@@ -448,6 +443,7 @@ describe('Mentions Test', () => {
     await element(by.id('mention-input-text')).tap({ x: 120, y: 5 });
     await element(by.id('mention-input-text')).multiTap(2);
     await element(by.label('Cut')).atIndex(0).tap();
+    await element(by.id('mention-input-text')).multiTap(2); // Add additional tap in order to prevent spell checker
     await element(by.id('mention-input-text')).multiTap(2);
     await element(by.label('Paste')).atIndex(0).tap();
 

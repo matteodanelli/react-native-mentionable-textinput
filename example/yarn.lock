@@ -3846,10 +3846,10 @@ detox-getprops@0.1.2:
   resolved "https://registry.yarnpkg.com/detox-getprops/-/detox-getprops-0.1.2.tgz#a76ec631629f2cca643c98d687700b82884b8f35"
   integrity sha512-fAv+emwiwRvVrOcVQAn3Gkl540If/Any9GBYmFzTAxxgRTwDqcg/X2LVLU8/Dkb4k7KPNAZeIHcIPMVGbt0X9w==
 
-detox@19.5.7:
-  version "19.5.7"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-19.5.7.tgz#81179f3d1f75088c2eb9bf52d7e21fa72a1c2c3a"
-  integrity sha512-vLd5eySM/zjaWLJGgbtx4g7qA3JZLCZHVz4n/AphNFFW3T3qiyh7HfIYeoBoZanjjyC1k3iuw2UshpBRlHZuGA==
+detox@19.9.2:
+  version "19.9.2"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-19.9.2.tgz#01060f2e7b5e23d09b2581aa42774d971f9ed437"
+  integrity sha512-q7Qi6ZQFo/0grkuVOYPC5lAqSSeb5HanNqfXhFAOnS3JXnrO/R4NRBYVrQfEPMJZNpOkITYtFjv7e/gAfBpNQQ==
   dependencies:
     ajv "^8.6.3"
     bunyan "^1.8.12"
@@ -3875,6 +3875,7 @@ detox@19.5.7:
     which "^1.3.1"
     ws "^7.0.0"
     yargs "^16.0.3"
+    yargs-parser "^20.2.2"
     yargs-unparser "^2.0.0"
 
 diff-sequences@^27.5.1:
@@ -5431,7 +5432,7 @@ jest-changed-files@^27.5.1:
     execa "^5.0.0"
     throat "^6.0.1"
 
-jest-circus@^27.5.1:
+jest-circus@27.5.1, jest-circus@^27.5.1:
   version "27.5.1"
   resolved "https://registry.yarnpkg.com/jest-circus/-/jest-circus-27.5.1.tgz#37a5a4459b7bf4406e53d637b49d22c65d125ecc"
   integrity sha512-D95R7x5UtlMA5iBYsOHFFbMD/GVA4R/Kdq15f7xYWUfWHBto9NYRsOvnSauTgdF+ogCpJ4tyKOXhUifxS65gdw==

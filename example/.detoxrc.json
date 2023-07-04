@@ -10,7 +10,7 @@
     "android.emu.debug": {
       "type": "android.emulator",
       "binaryPath": "./android/app/build/outputs/apk/debug/app-debug.apk",
-      "build": "yarn jetifier && cd android && ./gradlew clean && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+      "build": "cd android && ./gradlew clean && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
       "device": {
         "avdName": "Pixel_API_30_AOSP"
       }

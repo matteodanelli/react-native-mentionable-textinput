@@ -9,7 +9,9 @@
     "ios": "react-native run-ios",
     "start": "react-native start --reset-cache",
     "e2e:ios-test": "detox test -c ios.sim.debug",
-    "e2e:ios-build": "detox build -c ios.sim.debug"
+    "e2e:ios-build": "detox build -c ios.sim.debug",
+    "e2e:android-test": "detox test -c android.emu.debug",
+    "e2e:android-build": "detox build -c android.emu.debug"
   },
   "dependencies": {
     "react": "18.2.0",
@@ -28,12 +30,13 @@
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
     "babel-jest": "29.2.1",
-    "detox": "19.5.7",
+    "detox": "19.9.2",
     "detox-getprops": "0.1.2",
     "eslint": "8.19.0",
     "eslint-plugin-detox": "1.0.0",
     "jest": "27.5.1",
     "jest-cli": "27.5.1",
+    "jest-circus": "27.5.1",
     "metro-react-native-babel-preset": "0.73.9",
     "react-test-renderer": "18.2.0",
     "ts-jest": "27.1.5",
