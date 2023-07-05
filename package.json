@@ -1,6 +1,6 @@
 {
   "name": "react-native-mentionable-textinput",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "ReactNative TextInput with enhanced capabilities for mentions",
   "main": "./src/index.tsx",
   "scripts": {
