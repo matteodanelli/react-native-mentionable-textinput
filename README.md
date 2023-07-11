@@ -88,10 +88,19 @@ import { TextInputMention } from "react-native-mentionable-textinput";
 
 ### Hooks properties
 
-`useMentions` hooks is exposed.
+`useMentions` is born as a plugin to add mentions to a component that has the properties of text input. The following are needed:
+* [onChangeText](https://reactnative.dev/docs/textinput#onchangetext)
+* [onSelectionChange](https://reactnative.dev/docs/textinput#onselectionchange)
+
+The hook can be attached as a plugin to any component that accepts these props.
+
+
 You can create with
 ```
   const hook = useMention({
+    searchMentionableItems: mySearchFunction,
+    mentionableItems: myResultsOfSearchMentionableItems
+    onSend: mySendFunction,
     mentionsTypes: [
       {
         type: 'TYPE_1',
@@ -102,34 +111,35 @@ You can create with
       {id: '1', label: 'First item label', type: 'TYPE_1'},
       ...
     ],
+    ...
   });
 ```
 and the following properties are available:
 
 | Name | Type | Additional info |
 | - | - | - |
-| mentioned | Array<Mention> | List of mentioned items |
+| mentioned | Array<Mention> | List of mentioned items added |
 | formattedText | string | Complete label to place into input text |
-| onChangeText | (text: string, mentioned: Array<Mention<T>>) => void | Callback on change text |
-| onSelectionChange | (event: { nativeEvent: { selection: CursorPosition } }) => void | Callback when text is selected |
+| [onChangeText](https://reactnative.dev/docs/textinput#onchangetext) | (text: string, mentioned: Array<Mention<T>>) => void | Callback when text changes, passed to **TextInput** |
+| [onSelectionChange](https://reactnative.dev/docs/textinput#onselectionchange) | (event: { nativeEvent: { selection: CursorPosition } }) => void | Callback when text is selected, passed to **TextInput** |
 | cursorPosition | { start: number; end: number } | Position of the cursor |
 | addMention | (mention: {id: string; label: string; type: T}) => void | Add a new mentioned item |
 | chosenMentionType | string - type T | Type of the selected mention item |
 | showMentionItems | boolean | Check if mention items should be visible |
 | showMentionTypes | boolean | Check if mention types should be visible |
 | isMentionsDisabled | boolean | Check if mention feature is enabled |
-| onSendCallback | () => void | Callback of textinput onSend |
+| onSendCallback | () => void | Calls onSend passed as props to the hook. Internally it uses onSend(inputText, mentioned) |
 | onPressMentionIcon | () => void | Callback when mention icon is pressed |
 | mentionableItems | Array<MentionListItem<T>> | List of all mentionable items |
-| onPressMentionType | (mentionType: T, localCursorPosition?: CursorPosition) => void | Callback when a type is selected |
-| closeMention | () => void | Callback when mention popup is closed |
+| onPressMentionType | (mentionType: T, localCursorPosition?: CursorPosition) => void | Prepares the hook to give you the data to show the mentions type |
+| closeMention | () => void | Prepare the hook to close the mention popup |
 | mentionItemsVisible | boolean | Check if showMentionItems with items list should be visible |
 | isTextUpdated | boolean | Returns if text has changed wrt initial text |
 | mentionsTypes | Array<MentionItemType<T>> | List of mention types |
-| isSmartSearchEnabled | boolean | True if smart search is active |
+| isSmartSearchEnabled | boolean | True if [smart search](./smartSearch.md) is active |
 | searchMentionPositions | Array<SearchCursorPosition<T>> | List of positions of all mentions |
 | inputText | string | It's the text contained in the input field |
-| setInputText | (text): string) => void | callback to set text inside textinput |
+| setInputText | (text): string => void | Sets text inside textinput |
 
 This hook could be used to create you own custom component using some of this library logic. Let me know if you find it useful!
 ## Contributing
