@@ -1,13 +1,6 @@
 import { MentionListItem, MentionItemType } from './types';
 import React, { Fragment, useCallback, useMemo } from 'react';
-import {
-  FlatList,
-  View,
-  Text,
-  Pressable,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { FlatList, View, Text, Pressable, ViewStyle } from 'react-native';
 import styles from './style';
 
 type Props<T> = {
@@ -23,7 +16,7 @@ type Props<T> = {
   renderMentionType?: (mentionType: T) => JSX.Element;
   renderMentionItem?: (mention: MentionListItem<T>) => JSX.Element;
   maxHeightMentionWindow?: number;
-  mentionContainerStyle?: StyleProp<ViewStyle>;
+  mentionContainerStyle?: ViewStyle;
 };
 
 const MentionView = <T,>(props: Props<T>) => {
@@ -74,7 +67,9 @@ const MentionView = <T,>(props: Props<T>) => {
   const renderMentionTypes = useMemo(
     () => (
       <View style={mentionContainerStyle}>
-        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+        <View
+          style={{ ...styles.separator, backgroundColor: separatorColor }}
+        />
         {mentionsTypes.map((mentionType) => {
           return (
             <Pressable
@@ -113,11 +108,11 @@ const MentionView = <T,>(props: Props<T>) => {
   ) {
     return (
       <View
-        style={{
-          maxHeight: maxHeightMentionWindow,
-        }}
+        style={{ maxHeight: maxHeightMentionWindow, ...mentionContainerStyle }}
       >
-        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+        <View
+          style={{ ...styles.separator, backgroundColor: separatorColor }}
+        />
         <FlatList
           removeClippedSubviews
           showsHorizontalScrollIndicator={false}
